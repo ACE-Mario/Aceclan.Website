@@ -1,1 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACE Clan</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0d0f14;
+    color: #e8e8e8;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    line-height: 1.6;
+  }
+  header {
+    background: linear-gradient(135deg, #1a1d29, #2a1a3e);
+    padding: 60px 20px;
+    text-align: center;
+    border-bottom: 3px solid #7c3aed;
+  }
+  header h1 {
+    font-size: 3.5rem;
+    letter-spacing: 4px;
+    color: #a78bfa;
+    text-shadow: 0 0 20px rgba(124, 58, 237, 0.6);
+  }
+  header p {
+    margin-top: 10px;
+    color: #9ca3af;
+    font-size: 1.1rem;
+  }
+  nav {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    background: #14161f;
+    padding: 15px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  nav a {
+    color: #d1d5db;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: #a78bfa; }
+  section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 20px;
+  }
+  section h2 {
+    font-size: 2rem;
+    color: #a78bfa;
+    margin-bottom: 20px;
+    border-left: 4px solid #7c3aed;
+    padding-left: 15px;
+  }
+  #about p {
+    color: #cbd5e1;
+    font-size: 1.05rem;
+  }
+  .members-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .member-card {
+    background: #1a1d29;
+    border: 1px solid #2e2f3e;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    font-weight: 600;
+    color: #e8e8e8;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .member-card:hover {
+    transform: translateY(-4px);
+    border-color: #7c3aed;
+  }
+  footer {
+    text-align: center;
+    padding: 30px;
+    color: #6b7280;
+    font-size: 0.9rem;
+    border-top: 1px solid #2e2f3e;
+  }
+</style>
+</head>
+<body>
 
+<header>
+  <h1>ACE CLAN</h1>
+  <p>aceclan.lol</p>
+</header>
+
+<nav>
+  <a href="#about">About</a>
+  <a href="#members">Members</a>
+</nav>
+
+<section id="about">
+  <h2>About</h2>
+  <p>
+    ACE Clan is a Minecraft crew built on chaos, loyalty, and questionable decision-making.
+    We're not here to be the biggest or the most serious clan around — we're here to have a
+    good time, build stupid things, and back each other up in-game and out. If you're looking
+    for a tryhard military-structured guild, this isn't it. If you want a group of people who
+    actually enjoy playing together, welcome home.
+  </p>
+</section>
+
+<section id="members">
+  <h2>Members</h2>
+  <div class="members-grid">
+    <div class="member-card">ACE Mario</div>
+    <div class="member-card">ACE BlackJack</div>
+    <div class="member-card">ACE Curious</div>
+    <div class="member-card">ACE Dan</div>
+    <div class="member-card">ACE Moe Lester</div>
+    <div class="member-card">ACE Panty Goblin</div>
+    <div class="member-card">ACE PorkMyHole</div>
+  </div>
+</section>
+
+<footer>
+  &copy; 2026 ACE Clan
+</footer>
+
+</body>
+</html>
