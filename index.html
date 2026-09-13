@@ -11,6 +11,7 @@
     color: #e8e8e8;
     font-family: 'Segoe UI', Arial, sans-serif;
     line-height: 1.6;
+    min-height: 100vh;
   }
   header {
     background: linear-gradient(135deg, #1a1d29, #2a1a3e);
@@ -29,59 +30,18 @@
     color: #9ca3af;
     font-size: 1.1rem;
   }
-  nav {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    background: #14161f;
-    padding: 15px;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-  nav a {
-    color: #d1d5db;
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.2s;
-  }
-  nav a:hover { color: #a78bfa; }
-  section {
+  section#image-display {
     max-width: 900px;
     margin: 0 auto;
     padding: 60px 20px;
-  }
-  section h2 {
-    font-size: 2rem;
-    color: #a78bfa;
-    margin-bottom: 20px;
-    border-left: 4px solid #7c3aed;
-    padding-left: 15px;
-  }
-  #about p {
-    color: #cbd5e1;
-    font-size: 1.05rem;
-  }
-  .members-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    margin-top: 20px;
-  }
-  .member-card {
-    background: #1a1d29;
-    border: 1px solid #2e2f3e;
-    border-radius: 10px;
-    padding: 20px;
     text-align: center;
-    font-weight: 600;
-    color: #e8e8e8;
-    transition: transform 0.2s, border-color 0.2s;
   }
-.member-card {
-  text-decoration: none;
-  display: block;
-}
+  section#image-display img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    border: 1px solid #2e2f3e;
+    box-shadow: 0 0 30px rgba(124, 58, 237, 0.25);
   }
   footer {
     text-align: center;
@@ -99,41 +59,8 @@
   <p>aceclan.lol</p>
 </header>
 
-<nav>
-  <a href="#about">About</a>
-  <a href="#members">Members</a>
-</nav>
-
-<section id="about">
-  <h2>About</h2>
-  <p>
-    ACE Clan is a bunch of high level League of Legends players whose entire purpose is to
-    int as many games as possible. If you see us inside your game, it is so over for you.
-    FF15 is the most likely occurrence. GL.
-  </p>
-  <p style="margin-top: 20px;">
-    We don't ward. We don't group up. We don't respect the jungle timer. What we do respect
-    is diving turret at level 3 for absolutely no reason and typing "ez" regardless of the
-    scoreboard. Every game is a coinflip and we are the coin.
-  </p>
-  <p style="margin-top: 20px;">
-    Founded on the principle that mechanics are optional but confidence is mandatory, ACE
-    Clan has a combined win rate that should not mathematically be possible. We are not
-    proud. We are not sorry. We are ACE.
-  </p>
-</section>
-
-<section id="members">
-  <h2>Members</h2>
-  <div class="members-grid">
-    <a class="member-card" href="https://op.gg/lol/summoners/oce/ACE%20Mario-CLOCK" target="_blank" rel="noopener">ACE Mario</a>
-    <a class="member-card" href="https://op.gg/lol/summoners/oce/ACE%20BlackJack-Flush" target="_blank" rel="noopener">ACE BlackJack</a>
-    <a class="member-card" href="https://op.gg/lol/summoners/oce/ACE%20curious-0101" target="_blank" rel="noopener">ACE Curious</a>
-    <a class="member-card" href="https://op.gg/lol/summoners/oce/ACE%20Dan-RES" target="_blank" rel="noopener">ACE Dan</a>
-    <a class="member-card" href="https://op.gg/lol/summoners/oce/ACE%20Moe%20Lester-Touch" target="_blank" rel="noopener">ACE Moe Lester</a>
-    <a class="member-card" href="https://op.gg/lol/summoners/oce/ACE%20panty%20goblin-000" target="_blank" rel="noopener">ACE Panty Goblin</a>
-    <a class="member-card" href="https://op.gg/lol/summoners/oce/ACE%20PorkMyHole-HARD" target="_blank" rel="noopener">ACE PorkMyHole</a>
-  </div>
+<section id="image-display">
+  <img src="your-image.jpg" alt="ACE Clan">
 </section>
 
 <footer>
