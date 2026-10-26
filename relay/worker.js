@@ -2,6 +2,7 @@
 // The website posts tier lists and applications here; this forwards them to Discord.
 // The webhook links live in the Worker's secrets (TIERLIST_WEBHOOK, APPLY_WEBHOOK),
 // never in the public website code.
+// It also keeps the site's visit count in a KV namespace bound as STATS.
 
 const ALLOWED_ORIGINS = ["https://aceclan.lol", "https://www.aceclan.lol", "http://127.0.0.1:8765"];
 const TIERS = ["S", "A", "B", "C", "D"];
@@ -12,13 +13,13 @@ const recent = new Map();
 function cors(origin) {
   return {
     "Access-Control-Allow-Origin": ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0],
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
   };
 }
 
-function reply(origin, status, message) {
-  return new Response(JSON.stringify({ message }), {
+function reply(origin, status, message, extra = {}) {
+  return new Response(JSON.stringify({ message, ...extra }), {
     status,
     headers: { ...cors(origin), "Content-Type": "application/json" },
   });
@@ -76,10 +77,23 @@ export default {
   async fetch(request, env) {
     const origin = request.headers.get("Origin") || "";
     if (request.method === "OPTIONS") return new Response(null, { headers: cors(origin) });
+    const path = new URL(request.url).pathname;
+
+    // Visit counter: GET reads it, POST (from the site) adds one visit.
+    if (path === "/visits") {
+      if (!env.STATS) return reply(origin, 503, "Counter not set up");
+      let count = parseInt(await env.STATS.get("visits"), 10) || 0;
+      if (request.method === "POST" && ALLOWED_ORIGINS.includes(origin)
+          && !tooMany("visit:" + (request.headers.get("CF-Connecting-IP") || "unknown"))) {
+        count++;
+        await env.STATS.put("visits", String(count));
+      }
+      return reply(origin, 200, "OK", { count });
+    }
+
     if (request.method !== "POST") return reply(origin, 405, "POST only");
     if (!ALLOWED_ORIGINS.includes(origin)) return reply(origin, 403, "Not allowed");
 
-    const path = new URL(request.url).pathname;
     const route = {
       "/tierlist": [env.TIERLIST_WEBHOOK, tierListEmbed],
       "/apply": [env.APPLY_WEBHOOK, applicationEmbed],

@@ -419,13 +419,6 @@
     min-height: 1.6em;
     margin: 0 !important;
   }
-  section#visitors {
-    text-align: center;
-    padding: 0 20px 40px;
-  }
-  section#visitors img {
-    image-rendering: pixelated;
-  }
   section#players {
     max-width: 1000px;
     margin: 0 auto 80px;
@@ -801,6 +794,27 @@
     height: 1px;
     background: linear-gradient(90deg, transparent, #ff4655, #7c3aed, #c89b3c, transparent);
   }
+  footer .visits {
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    gap: 8px;
+    margin: 10px auto 12px;
+    padding: 6px 16px;
+    border: 1px solid #2e2f3e;
+    border-radius: 999px;
+    background: rgba(26, 29, 41, 0.6);
+    color: #9ca3af;
+    letter-spacing: 1px;
+  }
+  footer .visits[hidden] { display: none; }
+  footer .visits b {
+    font-family: 'Rajdhani', 'Segoe UI', Arial, sans-serif;
+    font-size: 1.2rem;
+    color: #e8e8e8;
+    font-variant-numeric: tabular-nums;
+  }
+  footer .visits .eye { filter: grayscale(0.3); }
   footer .gg {
     display: block;
     font-family: 'Rajdhani', 'Segoe UI', Arial, sans-serif;
@@ -1192,14 +1206,39 @@
   });
 </script>
 
-<section id="Members">
-  <img src="https://hits.sh/aceclan.lol.svg?label=ACE%20Clan%20Members" alt="ACE members">
-</section>
-
 <footer>
   <span class="gg">GG WP</span>
+  <div class="visits" id="visits" hidden>
+    <span class="eye">👁</span><b id="visit-count">-</b><span>visits</span>
+  </div>
   &copy; 2026 ACE Clan
 </footer>
+
+<script>
+  // Visitor counter, kept by the relay. Each browser counts once a day.
+  (async () => {
+    let counted = false;
+    const today = new Date().toDateString();
+    try { counted = localStorage.getItem("ace-visit") === today; } catch {}
+    try {
+      const res = await fetch(RELAY + "/visits", { method: counted ? "GET" : "POST" });
+      if (!res.ok) return;
+      const { count } = await res.json();
+      try { localStorage.setItem("ace-visit", today); } catch {}
+      const el = document.getElementById("visit-count");
+      const box = document.getElementById("visits");
+      box.hidden = false;
+      // Count up to the number for a bit of flair.
+      const start = performance.now();
+      const tick = now => {
+        const t = Math.min((now - start) / 1200, 1);
+        el.textContent = Math.round(count * (1 - Math.pow(1 - t, 3))).toLocaleString();
+        if (t < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    } catch {}
+  })();
+</script>
 
 <script>
   // Hero stats, worked out from the player list.
