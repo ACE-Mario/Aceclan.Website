@@ -137,6 +137,37 @@
   .player-card .rank strong {
     color: #c89b3c;
   }
+  .player-card .rank strong.agent {
+    color: #ff4655;
+  }
+  .player-card[hidden] {
+    display: none;
+  }
+  .filters {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 25px;
+  }
+  .filters button {
+    background: #1a1d29;
+    color: #9ca3af;
+    border: 1px solid #2e2f3e;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .filters button:hover {
+    color: #e8e8e8;
+  }
+  .filters button.active {
+    background: #7c3aed;
+    border-color: #7c3aed;
+    color: #e8e8e8;
+  }
   .player-card h3 {
     color: #e8e8e8;
     font-size: 1.3rem;
@@ -201,6 +232,11 @@
 
 <section id="players">
   <h2>PLAYERS</h2>
+  <div class="filters" id="filters">
+    <button data-game="all" class="active">All</button>
+    <button data-game="valorant">Valorant</button>
+    <button data-game="league">League</button>
+  </div>
   <div class="player-grid" id="player-grid"></div>
 </section>
 
@@ -208,23 +244,61 @@
   // Add a player: copy a line and fill it in.
   // games: "valorant", "league" or both. region: oce, na, euw, etc.
   // icon: League profile icon number (optional). rank: League solo/duo rank (optional).
+  // agent: most played Valorant agent (optional, must be in the agents list below).
+  // main: "valorant" or "league" - which picture shows in the All view (default: league if they have an icon).
+  // val: a different Riot ID used for Valorant (optional), e.g. { name: "Alt", tag: "123" }.
   const players = [
-    { name: "ACE Mario", tag: "CLOCK", games: ["valorant", "league"], region: "oce", roles: ["Top", "Support"], icon: 7142, rank: "Platinum 3" },
-    { name: "ACE ClimbMedia", tag: "HARD", games: ["valorant", "league"], region: "oce", icon: 6759, rank: "Silver 4" },
-    { name: "ACE Dan", tag: "RES", games: ["valorant", "league"], region: "oce", icon: 7176, rank: "Gold 3" },
-    { name: "ACE panty goblin", tag: "000", games: ["valorant", "league"], region: "oce", icon: 5642, rank: "Gold 2" },
-    { name: "ACE BlackJack", tag: "Flush", games: ["valorant", "league"], region: "oce", icon: 5530, rank: "Bronze 2" },
-    { name: "ACE curious", tag: "0101", games: ["valorant", "league"], region: "oce", icon: 3018, rank: "Iron 2" },
-    { name: "ACE KUHNTLICKA", tag: "BOSH", games: ["valorant"], region: "oce" },
-    { name: "ACE rice farmer", tag: "8151", games: ["valorant"], region: "oce" },
-    { name: "ACE Yuumy", tag: "LLL", games: ["valorant"], region: "oce" },
-    { name: "Clammy", tag: "8355", games: ["valorant"], region: "oce" },
+    { name: "ACE Mario", tag: "CLOCK", games: ["valorant", "league"], region: "oce", roles: ["Top", "Support"], icon: 7142, rank: "Platinum 3", agent: "Gekko" },
+    { name: "ACE ClimbMedia", tag: "HARD", games: ["valorant", "league"], region: "oce", icon: 6759, rank: "Silver 4", agent: "Raze" },
+    { name: "ACE Dan", tag: "RES", games: ["valorant", "league"], region: "oce", icon: 7176, rank: "Gold 3", agent: "Jett" },
+    { name: "ACE panty goblin", tag: "000", games: ["valorant", "league"], region: "oce", icon: 5642, rank: "Gold 2", agent: "Breach" },
+    { name: "ACE BlackJack", tag: "Flush", games: ["valorant", "league"], region: "oce", icon: 5530, rank: "Bronze 2", agent: "Jett", val: { name: "ACE Yuumy", tag: "LLL" } },
+    { name: "ACE curious", tag: "0101", games: ["valorant", "league"], region: "oce", icon: 3018, rank: "Iron 2", agent: "KAY/O" },
+    { name: "ACE KUHNTLICKA", tag: "BOSH", games: ["valorant"], region: "oce", agent: "Phoenix" },
+    { name: "ACE rice farmer", tag: "8151", games: ["valorant"], region: "oce", agent: "Sage" },
+    { name: "Clammy", tag: "8355", games: ["valorant"], region: "oce", agent: "Iso" },
   ];
   const ddragon = "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/profileicon/";
+  const agents = {
+    Breach: "5f8d3a7f-467b-97f3-062c-13acf203c006",
+    Clove: "1dbf2edd-4729-0984-3115-daa5eed44993",
+    Gekko: "e370fa57-4757-3604-3648-499e1f642d3f",
+    Iso: "0e38b510-41a8-5780-5e8f-568b2a4f2d6c",
+    Jett: "add6443a-41bd-e414-f6ad-e58d267f4e95",
+    "KAY/O": "601dbbe7-43ce-be57-2a40-4abd24953621",
+    Phoenix: "eb93336a-449b-9c1b-0a54-a891f7921d69",
+    Raze: "f94c3b30-42be-e959-889c-5aa313dba261",
+    Sage: "569fdd95-4d10-43ab-ca70-79becc718b46",
+    Sova: "320b2a48-4d9b-a075-30f1-1f93a9b638fa",
+  };
+  const leaguePic = p => p.icon ? ddragon + p.icon + ".png" : null;
+  const agentPic = p => agents[p.agent] ? `https://media.valorant-api.com/agents/${agents[p.agent]}/displayicon.png` : null;
+
+  // Which picture a card shows for the current filter.
+  function pictureFor(p, filter) {
+    if (filter === "valorant") return agentPic(p);
+    if (filter === "league") return leaguePic(p);
+    const main = p.main || (p.icon ? "league" : "valorant");
+    return main === "valorant" ? agentPic(p) || leaguePic(p) : leaguePic(p) || agentPic(p);
+  }
+
+  function setAvatar(card, src) {
+    const avatar = card.querySelector(".avatar");
+    avatar.textContent = card.dataset.letter;
+    card.dataset.src = src || "";
+    if (!src) return;
+    const img = document.createElement("img");
+    img.src = src;
+    img.alt = "";
+    // Ignore a picture that finishes loading after the filter has changed.
+    img.onload = () => { if (card.dataset.src === src) { avatar.textContent = ""; avatar.appendChild(img); } };
+  }
 
   const grid = document.getElementById("player-grid");
+  const cards = [];
   for (const p of players) {
-    const riotId = encodeURIComponent(p.name + "#" + p.tag);
+    const val = p.val || p;
+    const riotId = encodeURIComponent(val.name + "#" + val.tag);
     const opgg = encodeURIComponent(p.name + "-" + p.tag);
     const card = document.createElement("div");
     card.className = "player-card";
@@ -239,22 +313,27 @@
         ${(p.roles || []).map(r => `<span class="badge">${r}</span>`).join("")}
       </div>
       ${p.rank ? `<div class="rank">League: <strong>${p.rank}</strong></div>` : ""}
+      ${p.agent ? `<div class="rank">Main agent: <strong class="agent">${p.agent}</strong></div>` : ""}
       <div class="links">
         ${p.games.includes("valorant") ? `<a href="https://tracker.gg/valorant/profile/riot/${riotId}/overview" target="_blank" rel="noopener">Tracker</a>` : ""}
         ${p.games.includes("league") ? `<a href="https://op.gg/lol/summoners/${p.region}/${opgg}" target="_blank" rel="noopener">OP.GG</a>` : ""}
       </div>`;
-    const avatar = card.querySelector(".avatar");
-    avatar.textContent = p.name.replace(/^ACE\s*/i, "").charAt(0).toUpperCase();
-    if (p.icon) {
-      const img = document.createElement("img");
-      img.src = ddragon + p.icon + ".png";
-      img.alt = "";
-      img.onload = () => { avatar.textContent = ""; avatar.appendChild(img); };
-    }
+    card.dataset.letter = p.name.replace(/^ACE\s*/i, "").charAt(0).toUpperCase();
     card.querySelector("h3").textContent = p.name;
-    card.querySelector(".tag").textContent = "#" + p.tag;
+    card.querySelector(".tag").textContent = "#" + p.tag + (p.val ? ` · Valorant: ${p.val.name}#${p.val.tag}` : "");
     grid.appendChild(card);
+    cards.push({ p, card });
   }
+
+  function applyFilter(filter) {
+    for (const { p, card } of cards) {
+      card.hidden = filter !== "all" && !p.games.includes(filter);
+      setAvatar(card, pictureFor(p, filter));
+    }
+    document.querySelectorAll("#filters button").forEach(b => b.classList.toggle("active", b.dataset.game === filter));
+  }
+  document.querySelectorAll("#filters button").forEach(b => b.addEventListener("click", () => applyFilter(b.dataset.game)));
+  applyFilter("all");
 </script>
 
 <section id="contact">
