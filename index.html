@@ -74,6 +74,82 @@
   section#contact a.contact-link:hover {
     background: #6d28d9;
   }
+  .apply-form {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 20px;
+  }
+  .apply-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    color: #9ca3af;
+    font-size: 0.9rem;
+  }
+  .apply-form input:not([type=checkbox]),
+  .apply-form textarea {
+    background: #0d0f14;
+    border: 1px solid #2e2f3e;
+    border-radius: 6px;
+    padding: 10px 12px;
+    color: #e8e8e8;
+    font: inherit;
+    resize: vertical;
+  }
+  .apply-form input:focus,
+  .apply-form textarea:focus {
+    outline: none;
+    border-color: #7c3aed;
+  }
+  .apply-form fieldset {
+    border: none;
+    display: flex;
+    gap: 20px;
+    color: #9ca3af;
+    font-size: 0.9rem;
+  }
+  .apply-form legend {
+    margin-bottom: 5px;
+  }
+  .apply-form label.check {
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    color: #e8e8e8;
+    cursor: pointer;
+  }
+  .apply-form input[type=checkbox] {
+    accent-color: #7c3aed;
+    width: 16px;
+    height: 16px;
+  }
+  .apply-form button.contact-link {
+    border: none;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    align-self: center;
+    color: #e8e8e8;
+    background: #7c3aed;
+    padding: 10px 24px;
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+  .apply-form button.contact-link:hover:not(:disabled) {
+    background: #6d28d9;
+  }
+  .apply-form button.contact-link:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .apply-status {
+    text-align: center;
+    color: #a78bfa;
+    min-height: 1.6em;
+    margin: 0 !important;
+  }
   section#visitors {
     text-align: center;
     padding: 0 20px 40px;
@@ -168,6 +244,204 @@
     border-color: #7c3aed;
     color: #e8e8e8;
   }
+  .tl-open {
+    display: block;
+    margin: -10px auto 25px;
+    background: none;
+    color: #a78bfa;
+    border: 1px dashed #7c3aed;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .tl-open:hover {
+    background: #7c3aed;
+    color: #e8e8e8;
+  }
+  .tl-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 30px 16px;
+    overflow-y: auto;
+    z-index: 100;
+  }
+  .tl-overlay[hidden] {
+    display: none;
+  }
+  .tl-modal {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    background: #1a1d29;
+    border: 1px solid #7c3aed;
+    border-radius: 10px;
+    padding: 25px 20px;
+    box-shadow: 0 0 40px rgba(124, 58, 237, 0.35);
+  }
+  .tl-modal h2 {
+    color: #a78bfa;
+    text-align: center;
+    letter-spacing: 2px;
+  }
+  .tl-close {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    background: none;
+    border: none;
+    color: #9ca3af;
+    font-size: 1.8rem;
+    cursor: pointer;
+  }
+  .tl-close:hover {
+    color: #e8e8e8;
+  }
+  .tl-hint {
+    color: #9ca3af;
+    text-align: center;
+    margin: 5px 0 15px;
+  }
+  .tl-pick {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  .tl-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #0d0f14;
+    border: 2px solid #2e2f3e;
+    border-radius: 999px;
+    padding: 4px 12px 4px 4px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+  }
+  .tl-chip:hover {
+    border-color: #6d28d9;
+  }
+  .tl-chip.on,
+  .tl-chip.selected {
+    border-color: #a78bfa;
+    background: #2a1a3e;
+  }
+  .tl-chip.selected {
+    box-shadow: 0 0 12px rgba(167, 139, 250, 0.7);
+  }
+  .tl-pic {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #7c3aed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .tl-pic img {
+    width: 100%;
+    height: 100%;
+  }
+  .tl-row {
+    display: flex;
+    min-height: 56px;
+    margin-bottom: 4px;
+    background: #0d0f14;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .tl-label {
+    width: 56px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0d0f14;
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+  .tl-zone,
+  .tl-pool {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    gap: 6px;
+    padding: 6px;
+    cursor: pointer;
+  }
+  .tl-pool {
+    margin-top: 12px;
+    min-height: 56px;
+    border: 1px dashed #2e2f3e;
+    border-radius: 6px;
+  }
+  .tl-pool.empty::before {
+    content: "Everyone's ranked!";
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin: auto;
+  }
+  .tl-name {
+    display: block;
+    width: 100%;
+    margin-top: 15px;
+    background: #0d0f14;
+    border: 1px solid #2e2f3e;
+    border-radius: 6px;
+    padding: 10px 12px;
+    color: #e8e8e8;
+    font: inherit;
+  }
+  .tl-name:focus {
+    outline: none;
+    border-color: #7c3aed;
+  }
+  .tl-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .tl-btn {
+    background: #7c3aed;
+    color: #e8e8e8;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 6px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .tl-btn:hover:not(:disabled) {
+    background: #6d28d9;
+  }
+  .tl-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+  .tl-btn.secondary {
+    background: #2e2f3e;
+  }
+  .tl-status {
+    text-align: center;
+    color: #a78bfa;
+    margin-top: 12px;
+    min-height: 1.6em;
+  }
   .player-card h3 {
     color: #e8e8e8;
     font-size: 1.3rem;
@@ -237,6 +511,7 @@
     <button data-game="valorant">Valorant</button>
     <button data-game="league">League</button>
   </div>
+  <button class="tl-open" id="tl-open">★ Make a Tier List</button>
   <div class="player-grid" id="player-grid"></div>
 </section>
 
@@ -336,12 +611,240 @@
   applyFilter("all");
 </script>
 
+<div class="tl-overlay" id="tl" hidden>
+  <div class="tl-modal" role="dialog" aria-modal="true" aria-labelledby="tl-title">
+    <button class="tl-close" id="tl-close" aria-label="Close">&times;</button>
+    <h2 id="tl-title">Tier List</h2>
+    <div id="tl-step1">
+      <p class="tl-hint">Who did you play with?</p>
+      <div class="tl-pick" id="tl-pick"></div>
+      <div class="tl-actions">
+        <button class="tl-btn" id="tl-next" disabled>Next</button>
+      </div>
+    </div>
+    <div id="tl-step2" hidden>
+      <p class="tl-hint">Tap a player, then tap a tier. Or drag them.</p>
+      <div id="tl-tiers"></div>
+      <div class="tl-pool" id="tl-pool" data-tier=""></div>
+      <input class="tl-name" id="tl-name" placeholder="Your name (optional)" maxlength="40">
+      <div class="tl-actions">
+        <button class="tl-btn secondary" id="tl-back">Back</button>
+        <button class="tl-btn" id="tl-done">Done</button>
+      </div>
+      <p class="tl-status" id="tl-status"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Tier list: pick who you played with, rank them, send it to the clan.
+  // Forms go through the clan's Cloudflare relay (see relay/worker.js), which holds
+  // the Discord webhook links so they never appear in this public page.
+  const RELAY = "https://ace-relay.declangrigg7.workers.dev";
+
+  async function sendToRelay(path, data) {
+    const res = await fetch(RELAY + path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error(res.status === 429 ? "Too many submissions. Try again later." : "Couldn't send it. Try again in a minute.");
+  }
+  const TIERS = { S: "#ff7f7f", A: "#ffbf7f", B: "#ffdf7f", C: "#bfff7f", D: "#7fbfff" };
+
+  const tl = document.getElementById("tl");
+  const pick = document.getElementById("tl-pick");
+  const pool = document.getElementById("tl-pool");
+  const tiersEl = document.getElementById("tl-tiers");
+  const status = document.getElementById("tl-status");
+  const nextBtn = document.getElementById("tl-next");
+  const doneBtn = document.getElementById("tl-done");
+  let chosen = new Set();
+  let placement = {};
+  let selected = null;
+
+  function chip(p) {
+    const el = document.createElement("div");
+    el.className = "tl-chip";
+    el.dataset.name = p.name;
+    const pic = document.createElement("div");
+    pic.className = "tl-pic";
+    pic.textContent = p.name.replace(/^ACE\s*/i, "").charAt(0).toUpperCase();
+    const src = pictureFor(p, "all");
+    if (src) {
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = "";
+      img.onload = () => { pic.textContent = ""; pic.appendChild(img); };
+    }
+    const label = document.createElement("span");
+    label.textContent = p.name.replace(/^ACE\s+/i, "");
+    el.append(pic, label);
+    return el;
+  }
+
+  for (const [t, color] of Object.entries(TIERS)) {
+    const row = document.createElement("div");
+    row.className = "tl-row";
+    row.innerHTML = `<div class="tl-label" style="background:${color}">${t}</div><div class="tl-zone" data-tier="${t}"></div>`;
+    tiersEl.appendChild(row);
+  }
+  const zones = [...document.querySelectorAll(".tl-zone"), pool];
+
+  function showStep(n) {
+    document.getElementById("tl-step1").hidden = n !== 1;
+    document.getElementById("tl-step2").hidden = n !== 2;
+    status.textContent = "";
+  }
+
+  function openTierList() {
+    pick.innerHTML = "";
+    for (const p of players) {
+      const el = chip(p);
+      el.classList.toggle("on", chosen.has(p.name));
+      el.addEventListener("click", () => {
+        chosen.has(p.name) ? chosen.delete(p.name) : chosen.add(p.name);
+        el.classList.toggle("on", chosen.has(p.name));
+        nextBtn.disabled = chosen.size === 0;
+      });
+      pick.appendChild(el);
+    }
+    nextBtn.disabled = chosen.size === 0;
+    doneBtn.disabled = false;
+    showStep(1);
+    tl.hidden = false;
+  }
+
+  function renderTiers() {
+    zones.forEach(z => z.innerHTML = "");
+    for (const p of players) {
+      if (!chosen.has(p.name)) continue;
+      const el = chip(p);
+      el.draggable = true;
+      el.classList.toggle("selected", selected === p.name);
+      el.addEventListener("click", e => {
+        e.stopPropagation();
+        selected = selected === p.name ? null : p.name;
+        renderTiers();
+      });
+      el.addEventListener("dragstart", e => e.dataTransfer.setData("text/plain", p.name));
+      const zone = zones.find(z => z.dataset.tier === (placement[p.name] || ""));
+      zone.appendChild(el);
+    }
+    pool.classList.toggle("empty", !pool.children.length);
+  }
+
+  function moveTo(name, tier) {
+    placement[name] = tier;
+    selected = null;
+    renderTiers();
+  }
+
+  for (const z of zones) {
+    z.addEventListener("click", () => { if (selected) moveTo(selected, z.dataset.tier); });
+    z.addEventListener("dragover", e => e.preventDefault());
+    z.addEventListener("drop", e => {
+      e.preventDefault();
+      const name = e.dataTransfer.getData("text/plain");
+      if (chosen.has(name)) moveTo(name, z.dataset.tier);
+    });
+  }
+
+  nextBtn.addEventListener("click", () => {
+    for (const name of Object.keys(placement)) if (!chosen.has(name)) delete placement[name];
+    selected = null;
+    renderTiers();
+    showStep(2);
+  });
+  document.getElementById("tl-back").addEventListener("click", () => showStep(1));
+  document.getElementById("tl-open").addEventListener("click", openTierList);
+  document.getElementById("tl-close").addEventListener("click", () => tl.hidden = true);
+  tl.addEventListener("click", e => { if (e.target === tl) tl.hidden = true; });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") tl.hidden = true; });
+
+  doneBtn.addEventListener("click", async () => {
+    const ranked = Object.keys(TIERS).map(t => [t, players.filter(p => chosen.has(p.name) && placement[p.name] === t).map(p => p.name)]);
+    if (!ranked.some(([, names]) => names.length)) {
+      status.textContent = "Put at least one player in a tier first.";
+      return;
+    }
+    const from = document.getElementById("tl-name").value.trim() || "Anonymous";
+    const unranked = players.filter(p => chosen.has(p.name) && !placement[p.name]).map(p => p.name);
+
+    doneBtn.disabled = true;
+    status.textContent = "Sending...";
+    try {
+      await sendToRelay("/tierlist", { from, tiers: Object.fromEntries(ranked), unranked });
+      status.textContent = "Sent! Thanks for the tier list.";
+    } catch (err) {
+      status.textContent = err.message;
+      doneBtn.disabled = false;
+    }
+  });
+</script>
+
 <section id="contact">
-  <h2>Contact Us</h2>
-  <p>Want to send in an application?</p>
-  <p>use the link below and email us</p>
-  <a class="contact-link" href="mailto:aceleagueoflegendsclan@gmail.com">Email Us</a>
+  <h2>Apply to ACE</h2>
+  <p>Want to join? Fill this in and we'll get back to you on Discord.</p>
+  <form class="apply-form" id="apply-form">
+    <label>Discord username *
+      <input name="discord" required maxlength="40" placeholder="e.g. acemario">
+    </label>
+    <label>Riot ID *
+      <input name="riot" required maxlength="40" placeholder="Name#TAG" pattern=".+#.+" title="Name#TAG">
+    </label>
+    <fieldset>
+      <legend>Games *</legend>
+      <label class="check"><input type="checkbox" name="games" value="Valorant"> Valorant</label>
+      <label class="check"><input type="checkbox" name="games" value="League"> League</label>
+    </fieldset>
+    <label>Rank
+      <input name="rank" maxlength="60" placeholder="e.g. Gold 2 / Silver 1">
+    </label>
+    <label>Main roles / agents / champs
+      <input name="mains" maxlength="100" placeholder="e.g. Support, Jett, Thresh">
+    </label>
+    <label>Why do you want to join?
+      <textarea name="why" rows="3" maxlength="800"></textarea>
+    </label>
+    <button class="contact-link" type="submit" id="apply-send">Send Application</button>
+    <p class="apply-status" id="apply-status"></p>
+  </form>
 </section>
+
+<script>
+  // Applications go through the relay to the clan's Discord "Applications" channel.
+  const applyForm = document.getElementById("apply-form");
+  const applyStatus = document.getElementById("apply-status");
+  const applySend = document.getElementById("apply-send");
+
+  applyForm.addEventListener("submit", async e => {
+    e.preventDefault();
+    const data = new FormData(applyForm);
+    const games = data.getAll("games");
+    if (!games.length) {
+      applyStatus.textContent = "Pick at least one game.";
+      return;
+    }
+    applySend.disabled = true;
+    applyStatus.textContent = "Sending...";
+    try {
+      await sendToRelay("/apply", {
+        discord: data.get("discord"),
+        riot: data.get("riot"),
+        games,
+        rank: data.get("rank"),
+        mains: data.get("mains"),
+        why: data.get("why"),
+      });
+      applyForm.reset();
+      applyStatus.textContent = "Application sent! We'll message you on Discord.";
+    } catch (err) {
+      applyStatus.textContent = err.message;
+    }
+    applySend.disabled = false;
+  });
+</script>
 
 <section id="Members">
   <img src="https://hits.sh/aceclan.lol.svg?label=ACE%20Clan%20Members" alt="ACE members">
