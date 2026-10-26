@@ -4,58 +4,327 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ACE Clan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
   body {
-    background: #0d0f14;
+    background:
+      radial-gradient(ellipse at 50% 120%, rgba(124, 58, 237, 0.12), transparent 60%),
+      #0d0f14;
+    background-attachment: fixed;
     color: #e8e8e8;
     font-family: 'Segoe UI', Arial, sans-serif;
     line-height: 1.6;
     min-height: 100vh;
+    overflow-x: hidden;
   }
-  header {
-    background: linear-gradient(135deg, #1a1d29, #2a1a3e);
-    padding: 60px 20px;
+  h1, h2, h3, .hero-nav a, .hero-btn, .stat b {
+    font-family: 'Rajdhani', 'Segoe UI', Arial, sans-serif;
+  }
+
+  /* Hero */
+  header.hero {
+    position: relative;
+    min-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 90px 16px 70px;
     text-align: center;
-    border-bottom: 3px solid #7c3aed;
+    overflow: hidden;
+    isolation: isolate;
   }
-  header h1 {
-    font-size: 3.5rem;
-    letter-spacing: 4px;
-    color: #a78bfa;
-    text-shadow: 0 0 20px rgba(124, 58, 237, 0.6);
+  .hero-glow {
+    position: absolute;
+    inset: -20%;
+    z-index: -3;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(255, 70, 85, 0.28), transparent 35%),
+      radial-gradient(circle at 80% 35%, rgba(200, 155, 60, 0.22), transparent 35%),
+      radial-gradient(circle at 50% 70%, rgba(124, 58, 237, 0.45), transparent 45%);
+    filter: blur(20px);
+    animation: drift 18s ease-in-out infinite alternate;
   }
-  header p {
-    margin-top: 10px;
+  @keyframes drift {
+    from { transform: translate(-3%, -2%) rotate(0deg) scale(1); }
+    to { transform: translate(3%, 2%) rotate(8deg) scale(1.08); }
+  }
+  .hero-grid {
+    position: absolute;
+    left: -50%;
+    right: -50%;
+    bottom: -10%;
+    height: 55%;
+    z-index: -2;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.18) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(167, 139, 250, 0.18) 1px, transparent 1px);
+    background-size: 60px 60px;
+    transform: perspective(500px) rotateX(60deg);
+    transform-origin: bottom;
+    mask-image: linear-gradient(to top, black 10%, transparent 90%);
+    -webkit-mask-image: linear-gradient(to top, black 10%, transparent 90%);
+    animation: grid-move 4s linear infinite;
+  }
+  @keyframes grid-move {
+    to { background-position: 0 60px; }
+  }
+  #sparks {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+  }
+  header.hero::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ff4655, #7c3aed, #c89b3c, transparent);
+  }
+  .hero-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+  }
+  .hero-nav .logo {
+    font-family: 'Rajdhani', 'Segoe UI', Arial, sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: 3px;
+    color: #e8e8e8;
+    text-decoration: none;
+  }
+  .hero-nav .logo span { color: #a78bfa; }
+  .hero-nav nav { display: flex; gap: 20px; }
+  .hero-nav nav a {
     color: #9ca3af;
-    font-size: 1.1rem;
+    text-decoration: none;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+    transition: color 0.2s;
   }
-  section#image-display {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 60px 20px;
-    text-align: center;
+  .hero-nav nav a:hover { color: #e8e8e8; }
+  .hero-kicker {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    padding: 6px 16px;
+    border: 1px solid rgba(167, 139, 250, 0.35);
+    border-radius: 999px;
+    background: rgba(13, 15, 20, 0.5);
+    backdrop-filter: blur(6px);
+    color: #c4b5fd;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: rise 0.8s ease-out both;
   }
-  section#image-display img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 10px;
+  .hero-kicker .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 10px #22c55e;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 50% { opacity: 0.35; } }
+  header.hero h1 {
+    margin-top: 18px;
+    font-size: clamp(4rem, 16vw, 9rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: clamp(6px, 2vw, 16px);
+    background: linear-gradient(100deg, #ff4655 0%, #c4b5fd 35%, #ffffff 50%, #c4b5fd 65%, #c89b3c 100%);
+    background-size: 250% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 30px rgba(124, 58, 237, 0.55));
+    animation: rise 0.8s 0.1s ease-out both, shine 6s linear infinite;
+  }
+  @keyframes shine { to { background-position: -250% center; } }
+  header.hero .sub {
+    margin-top: 14px;
+    color: #9ca3af;
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    animation: rise 0.8s 0.2s ease-out both;
+  }
+  header.hero .sub .val { color: #ff4655; }
+  header.hero .sub .lol { color: #c89b3c; }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 32px;
+    animation: rise 0.8s 0.3s ease-out both;
+  }
+  .hero-btn {
+    padding: 12px 30px;
+    border-radius: 6px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #e8e8e8;
+    border: 1px solid #7c3aed;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  }
+  .hero-btn.primary {
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    box-shadow: 0 0 25px rgba(124, 58, 237, 0.5);
+  }
+  .hero-btn.ghost { background: rgba(13, 15, 20, 0.5); backdrop-filter: blur(6px); }
+  .hero-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 35px rgba(124, 58, 237, 0.7);
+  }
+  .hero-stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 44px;
+    animation: rise 0.8s 0.4s ease-out both;
+  }
+  .stat {
+    min-width: 120px;
+    padding: 12px 18px;
     border: 1px solid #2e2f3e;
-    box-shadow: 0 0 30px rgba(124, 58, 237, 0.25);
+    border-radius: 8px;
+    background: rgba(26, 29, 41, 0.6);
+    backdrop-filter: blur(6px);
+  }
+  .stat b {
+    display: block;
+    font-size: 1.8rem;
+    line-height: 1.1;
+    color: #e8e8e8;
+  }
+  .stat span {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #9ca3af;
+  }
+  .stat.val b { color: #ff4655; }
+  .stat.lol b { color: #c89b3c; }
+  .scroll-hint {
+    position: absolute;
+    bottom: 22px;
+    left: 50%;
+    width: 22px;
+    height: 36px;
+    margin-left: -11px;
+    border: 2px solid rgba(167, 139, 250, 0.5);
+    border-radius: 12px;
+  }
+  .scroll-hint::before {
+    content: "";
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    width: 4px;
+    height: 8px;
+    margin-left: -2px;
+    border-radius: 2px;
+    background: #a78bfa;
+    animation: scroll-dot 1.6s ease-in-out infinite;
+  }
+  @keyframes scroll-dot {
+    from { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(12px); opacity: 0; }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* Section headings and scroll-in */
+  .section-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  .section-title::before,
+  .section-title::after {
+    content: "";
+    height: 2px;
+    width: min(80px, 15vw);
+    background: linear-gradient(90deg, transparent, #7c3aed);
+  }
+  .section-title::after { transform: scaleX(-1); }
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: none;
+  }
+  @media (max-width: 520px) {
+    .hero-nav nav { gap: 14px; }
+    .hero-nav nav a { font-size: 0.85rem; }
+    .stat { min-width: 0; flex: 1 1 40%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
   }
   section#contact {
-    max-width: 500px;
-    margin: 0 auto 60px;
-    padding: 30px;
-    background: #1a1d29;
+    position: relative;
+    max-width: 520px;
+    margin: 0 auto 80px;
+    padding: 34px 30px;
+    background: linear-gradient(160deg, rgba(26, 29, 41, 0.95), rgba(34, 26, 51, 0.95));
     border: 1px solid #2e2f3e;
-    border-radius: 10px;
+    border-radius: 12px;
     text-align: center;
+    box-shadow: 0 0 60px -20px rgba(124, 58, 237, 0.6);
+    scroll-margin-top: 20px;
+  }
+  @media (max-width: 552px) {
+    section#contact { margin-left: 16px; margin-right: 16px; padding: 28px 18px; }
+  }
+  section#contact::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: 12px;
+    padding: 1px;
+    background: linear-gradient(135deg, #ff4655, transparent 35%, transparent 65%, #c89b3c);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+    pointer-events: none;
   }
   section#contact h2 {
-    color: #a78bfa;
+    color: #e8e8e8;
     margin-bottom: 10px;
-    font-size: 1.5rem;
+    font-size: 2rem;
+    letter-spacing: 4px;
   }
   section#contact p {
     color: #9ca3af;
@@ -159,15 +428,16 @@
   }
   section#players {
     max-width: 1000px;
-    margin: 0 auto 60px;
-    padding: 0 20px;
+    margin: 0 auto 80px;
+    padding: 80px 16px 0;
     text-align: center;
+    scroll-margin-top: 10px;
   }
   section#players h2 {
-    color: #a78bfa;
+    color: #e8e8e8;
     margin-bottom: 25px;
-    font-size: 1.8rem;
-    letter-spacing: 2px;
+    font-size: 2.6rem;
+    letter-spacing: 6px;
   }
   .player-grid {
     display: grid;
@@ -183,10 +453,40 @@
     text-align: center;
     transition: transform 0.2s, box-shadow 0.2s;
   }
-  .player-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 0 25px rgba(124, 58, 237, 0.35);
+  .player-card {
+    position: relative;
+    overflow: hidden;
+    border-top: 3px solid var(--glow, #7c3aed);
+    transition: opacity 0.6s ease-out, transform 0.4s ease-out, box-shadow 0.3s, border-color 0.3s;
   }
+  .player-card::before {
+    content: "";
+    position: absolute;
+    top: -60%;
+    left: 50%;
+    width: 220px;
+    height: 220px;
+    margin-left: -110px;
+    border-radius: 50%;
+    background: var(--glow, #7c3aed);
+    opacity: 0.12;
+    filter: blur(50px);
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .player-card.reveal.in:hover,
+  .player-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--glow, #7c3aed);
+    box-shadow: 0 10px 35px -10px var(--glow, #7c3aed);
+  }
+  .player-card:hover::before { opacity: 0.3; }
+  .player-card .avatar,
+  .player-card h3,
+  .player-card .meta,
+  .player-card .rank,
+  .player-card .links { position: relative; }
+  .player-card .avatar img { border-color: var(--glow, #7c3aed) !important; }
   .player-card .avatar {
     width: 72px;
     height: 72px;
@@ -486,26 +786,62 @@
     background: #7c3aed;
   }
   footer {
+    position: relative;
     text-align: center;
     padding: 30px;
     color: #6b7280;
     font-size: 0.9rem;
-    border-top: 1px solid #2e2f3e;
+  }
+  footer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #ff4655, #7c3aed, #c89b3c, transparent);
+  }
+  footer .gg {
+    display: block;
+    font-family: 'Rajdhani', 'Segoe UI', Arial, sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 6px;
+    color: #a78bfa;
   }
 </style>
 </head>
 <body>
 
-<header>
+<header class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grid"></div>
+  <canvas id="sparks"></canvas>
+  <div class="hero-nav">
+    <a class="logo" href="#">ACE<span>.</span></a>
+    <nav>
+      <a href="#players">Players</a>
+      <a href="#contact">Apply</a>
+    </nav>
+  </div>
+  <div class="hero-kicker"><span class="dot"></span>Oceania · Recruiting</div>
   <h1>ACE CLAN</h1>
+  <p class="sub"><span class="val">Valorant</span> · <span class="lol">League of Legends</span></p>
+  <div class="hero-actions">
+    <a class="hero-btn primary" href="#players">Meet the squad</a>
+    <a class="hero-btn ghost" href="#contact">Join us</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><b id="stat-members">-</b><span>Members</span></div>
+    <div class="stat val"><b id="stat-val">-</b><span>Valorant</span></div>
+    <div class="stat lol"><b id="stat-lol">-</b><span>League</span></div>
+    <div class="stat"><b id="stat-top">-</b><span>Top rank</span></div>
+  </div>
+  <a class="scroll-hint" href="#players" aria-label="Scroll to players"></a>
 </header>
 
-<section id="image-display">
-  <img src="your-image.jpg" alt="ACE Clan">
-</section>
-
 <section id="players">
-  <h2>PLAYERS</h2>
+  <h2 class="section-title">PLAYERS</h2>
   <div class="filters" id="filters">
     <button data-game="all" class="active">All</button>
     <button data-game="valorant">Valorant</button>
@@ -569,6 +905,15 @@
     img.onload = () => { if (card.dataset.src === src) { avatar.textContent = ""; avatar.appendChild(img); } };
   }
 
+  // Card glow colour: League rank colour, or Valorant red for Valorant-only players.
+  const RANK_COLORS = {
+    iron: "#7d7d7d", bronze: "#b0704f", silver: "#a8b4bf", gold: "#c89b3c", platinum: "#4fb6a8",
+    emerald: "#2ec27e", diamond: "#5a8dee", master: "#b05ce0", grandmaster: "#e0483f", challenger: "#f4c874",
+  };
+  const RANK_ORDER = Object.keys(RANK_COLORS);
+  const rankTier = p => (p.rank || "").split(" ")[0].toLowerCase();
+  const rankColor = p => RANK_COLORS[rankTier(p)] || (p.games.includes("valorant") ? "#ff4655" : "#7c3aed");
+
   const grid = document.getElementById("player-grid");
   const cards = [];
   for (const p of players) {
@@ -576,7 +921,8 @@
     const riotId = encodeURIComponent(val.name + "#" + val.tag);
     const opgg = encodeURIComponent(p.name + "-" + p.tag);
     const card = document.createElement("div");
-    card.className = "player-card";
+    card.className = "player-card reveal";
+    card.style.setProperty("--glow", rankColor(p));
     card.innerHTML = `
       <div class="avatar"></div>
       <h3></h3>
@@ -784,7 +1130,7 @@
 </script>
 
 <section id="contact">
-  <h2>Apply to ACE</h2>
+  <h2 class="section-title">APPLY</h2>
   <p>Want to join? Fill this in and we'll get back to you on Discord.</p>
   <form class="apply-form" id="apply-form">
     <label>Discord username *
@@ -851,8 +1197,89 @@
 </section>
 
 <footer>
+  <span class="gg">GG WP</span>
   &copy; 2026 ACE Clan
 </footer>
+
+<script>
+  // Hero stats, worked out from the player list.
+  document.getElementById("stat-members").textContent = players.length;
+  document.getElementById("stat-val").textContent = players.filter(p => p.games.includes("valorant")).length;
+  document.getElementById("stat-lol").textContent = players.filter(p => p.games.includes("league")).length;
+  const best = players.filter(p => p.rank).sort((a, b) => RANK_ORDER.indexOf(rankTier(b)) - RANK_ORDER.indexOf(rankTier(a)))[0];
+  document.getElementById("stat-top").textContent = best ? best.rank.replace(/^(\w)\w*/, m => m.length > 4 ? m.slice(0, 4) : m) : "-";
+  document.getElementById("stat-top").title = best ? `${best.rank} (${best.name})` : "";
+
+  // Fade sections and cards in as they scroll into view.
+  document.getElementById("contact").classList.add("reveal");
+  const reveals = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(entries => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          e.target.classList.add("in");
+          io.unobserve(e.target);
+        }
+      }
+    }, { threshold: 0.1 });
+    reveals.forEach(el => io.observe(el));
+  } else {
+    reveals.forEach(el => el.classList.add("in"));
+  }
+
+  // Floating sparks in the hero, in Valorant red, ACE purple and League gold.
+  (() => {
+    const canvas = document.getElementById("sparks");
+    const ctx = canvas.getContext("2d");
+    if (!ctx || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const colors = ["255,70,85", "167,139,250", "200,155,60"];
+    let sparks = [];
+    let w, h;
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = canvas.clientWidth;
+      h = canvas.clientHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const count = Math.round(Math.min(70, w / 18));
+      sparks = Array.from({ length: count }, () => spawn(true));
+    }
+    function spawn(anywhere) {
+      return {
+        x: Math.random() * w,
+        y: anywhere ? Math.random() * h : h + 10,
+        r: Math.random() * 1.8 + 0.6,
+        vy: Math.random() * 0.5 + 0.15,
+        vx: (Math.random() - 0.5) * 0.25,
+        a: Math.random() * 0.6 + 0.3,
+        c: colors[Math.floor(Math.random() * colors.length)],
+      };
+    }
+    let visible = true;
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(canvas);
+    function frame() {
+      if (visible) {
+        ctx.clearRect(0, 0, w, h);
+        for (const s of sparks) {
+          s.x += s.vx;
+          s.y -= s.vy;
+          if (s.y < -10) Object.assign(s, spawn(false));
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${s.c},${s.a})`;
+          ctx.shadowColor = `rgba(${s.c},1)`;
+          ctx.shadowBlur = 8;
+          ctx.fill();
+        }
+      }
+      requestAnimationFrame(frame);
+    }
+    resize();
+    window.addEventListener("resize", resize);
+    frame();
+  })();
+</script>
 
 </body>
 </html>
