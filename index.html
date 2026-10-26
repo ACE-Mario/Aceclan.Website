@@ -81,6 +81,105 @@
   section#visitors img {
     image-rendering: pixelated;
   }
+  section#players {
+    max-width: 1000px;
+    margin: 0 auto 60px;
+    padding: 0 20px;
+    text-align: center;
+  }
+  section#players h2 {
+    color: #a78bfa;
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+  }
+  .player-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 300px));
+    justify-content: center;
+    gap: 20px;
+  }
+  .player-card {
+    background: linear-gradient(160deg, #1a1d29, #221a33);
+    border: 1px solid #2e2f3e;
+    border-radius: 10px;
+    padding: 25px 20px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .player-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 25px rgba(124, 58, 237, 0.35);
+  }
+  .player-card .avatar {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    background: #7c3aed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #e8e8e8;
+  }
+  .player-card .avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid #7c3aed;
+  }
+  .player-card .rank {
+    color: #9ca3af;
+    font-size: 0.9rem;
+  }
+  .player-card .rank strong {
+    color: #c89b3c;
+  }
+  .player-card h3 {
+    color: #e8e8e8;
+    font-size: 1.3rem;
+  }
+  .player-card .tag {
+    color: #6b7280;
+    font-size: 0.95rem;
+  }
+  .player-card .meta {
+    margin: 12px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+  .player-card .badge {
+    font-size: 0.8rem;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid #2e2f3e;
+    color: #9ca3af;
+  }
+  .player-card .badge.valorant { border-color: #ff4655; color: #ff4655; }
+  .player-card .badge.league { border-color: #c89b3c; color: #c89b3c; }
+  .player-card .links {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  .player-card .links a {
+    color: #e8e8e8;
+    background: #2e2f3e;
+    padding: 6px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .player-card .links a:hover {
+    background: #7c3aed;
+  }
   footer {
     text-align: center;
     padding: 30px;
@@ -99,6 +198,64 @@
 <section id="image-display">
   <img src="your-image.jpg" alt="ACE Clan">
 </section>
+
+<section id="players">
+  <h2>PLAYERS</h2>
+  <div class="player-grid" id="player-grid"></div>
+</section>
+
+<script>
+  // Add a player: copy a line and fill it in.
+  // games: "valorant", "league" or both. region: oce, na, euw, etc.
+  // icon: League profile icon number (optional). rank: League solo/duo rank (optional).
+  const players = [
+    { name: "ACE Mario", tag: "CLOCK", games: ["valorant", "league"], region: "oce", roles: ["Top", "Support"], icon: 7142, rank: "Platinum 3" },
+    { name: "ACE ClimbMedia", tag: "HARD", games: ["valorant", "league"], region: "oce", icon: 6759, rank: "Silver 4" },
+    { name: "ACE Dan", tag: "RES", games: ["valorant", "league"], region: "oce", icon: 7176, rank: "Gold 3" },
+    { name: "ACE panty goblin", tag: "000", games: ["valorant", "league"], region: "oce", icon: 5642, rank: "Gold 2" },
+    { name: "ACE BlackJack", tag: "Flush", games: ["valorant", "league"], region: "oce", icon: 5530, rank: "Bronze 2" },
+    { name: "ACE curious", tag: "0101", games: ["valorant", "league"], region: "oce", icon: 3018, rank: "Iron 2" },
+    { name: "ACE KUHNTLICKA", tag: "BOSH", games: ["valorant"], region: "oce" },
+    { name: "ACE rice farmer", tag: "8151", games: ["valorant"], region: "oce" },
+    { name: "ACE Yuumy", tag: "LLL", games: ["valorant"], region: "oce" },
+    { name: "Clammy", tag: "8355", games: ["valorant"], region: "oce" },
+  ];
+  const ddragon = "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/profileicon/";
+
+  const grid = document.getElementById("player-grid");
+  for (const p of players) {
+    const riotId = encodeURIComponent(p.name + "#" + p.tag);
+    const opgg = encodeURIComponent(p.name + "-" + p.tag);
+    const card = document.createElement("div");
+    card.className = "player-card";
+    card.innerHTML = `
+      <div class="avatar"></div>
+      <h3></h3>
+      <div class="tag"></div>
+      <div class="meta">
+        ${p.games.includes("valorant") ? '<span class="badge valorant">Valorant</span>' : ""}
+        ${p.games.includes("league") ? '<span class="badge league">League</span>' : ""}
+        <span class="badge">${p.region.toUpperCase()}</span>
+        ${(p.roles || []).map(r => `<span class="badge">${r}</span>`).join("")}
+      </div>
+      ${p.rank ? `<div class="rank">League: <strong>${p.rank}</strong></div>` : ""}
+      <div class="links">
+        ${p.games.includes("valorant") ? `<a href="https://tracker.gg/valorant/profile/riot/${riotId}/overview" target="_blank" rel="noopener">Tracker</a>` : ""}
+        ${p.games.includes("league") ? `<a href="https://op.gg/lol/summoners/${p.region}/${opgg}" target="_blank" rel="noopener">OP.GG</a>` : ""}
+      </div>`;
+    const avatar = card.querySelector(".avatar");
+    avatar.textContent = p.name.replace(/^ACE\s*/i, "").charAt(0).toUpperCase();
+    if (p.icon) {
+      const img = document.createElement("img");
+      img.src = ddragon + p.icon + ".png";
+      img.alt = "";
+      img.onload = () => { avatar.textContent = ""; avatar.appendChild(img); };
+    }
+    card.querySelector("h3").textContent = p.name;
+    card.querySelector(".tag").textContent = "#" + p.tag;
+    grid.appendChild(card);
+  }
+</script>
 
 <section id="contact">
   <h2>Contact Us</h2>
