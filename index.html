@@ -949,6 +949,12 @@
     .mx-row .mx-dmg { grid-column: 3 / 5; }
     .mx-row .mx-items { grid-column: 3 / 5; }
   }
+  .pf-refresh, .note-refresh { background: #151823; color: #e8e8e8; border: 1px solid #2e2f3e; border-radius: 6px;
+    padding: 5px 12px; font: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+  .pf-refresh { margin-left: auto; order: 3; }
+  .note-refresh { margin-left: 8px; padding: 2px 10px; font-size: 0.78rem; vertical-align: 1px; }
+  .pf-refresh:hover:not(:disabled), .note-refresh:hover:not(:disabled) { border-color: #7c3aed; }
+  .pf-refresh:disabled, .note-refresh:disabled { opacity: 0.6; cursor: default; }
   .pf-foot { margin-top: 18px; color: #6b7280; font-size: 0.78rem; text-align: center; }
   @media (max-width: 520px) {
     .pf-modal { padding: 20px 14px; }
@@ -1505,13 +1511,21 @@
     };
     const ago = s => {
       const m = Math.round((Date.now() / 1000 - s) / 60);
-      return m < 60 ? `${Math.max(m, 1)}m ago` : m < 1440 ? `${Math.round(m / 60)}h ago` : `${Math.round(m / 1440)}d ago`;
+      return m < 1 ? "just now" : m < 60 ? `${m}m ago` : m < 1440 ? `${Math.round(m / 60)}h ago` : `${Math.round(m / 1440)}d ago`;
     };
     const champPic = (c, badge, title) => `<span class="champ-pic" title="${esc(title || c.name)}">${champImg(c) ? `<img src="${champImg(c)}" alt="${esc(c.name)}" loading="lazy">` : ""}${badge != null ? `<b>${esc(badge)}</b>` : ""}</span>`;
 
     const byId = new Map(cards.filter(c => c.p.games.includes("league")).map(c => [`${c.p.name}#${c.p.tag}`.toLowerCase(), c]));
     const note = document.createElement("p");
     note.className = "live-note";
+    note.addEventListener("click", async e => {
+      const b = e.target.closest(".note-refresh");
+      if (!b) return;
+      b.disabled = true;
+      b.textContent = "Refreshing…";
+      await loadCards();
+      if (b.isConnected) { b.disabled = false; b.textContent = "↻ Refresh"; }   // offline: the note stayed as it was
+    });
     document.getElementById("player-grid").after(note);
 
     // ---- Cards ----
@@ -1577,7 +1591,7 @@
       }
       const inGame = Object.values(data.players || {}).filter(d => d.live).length;
       const duo = data.bestDuo;
-      note.innerHTML = live ? `<span class="dot"></span>League stats are live from Riot. Tap a player for their profile.`
+      note.innerHTML = live ? `<span class="dot"></span>League stats are live from Riot. Tap a player for their profile.<button type="button" class="note-refresh" title="Get everyone's latest stats now">↻ Refresh</button>`
         + (inGame ? ` <b>${inGame} in game now.</b>` : "")
         + (duo ? `<br>Best duo: <b>${duo.players.map(n => esc(n.split("#")[0])).join(" + ")}</b> · ${Math.round(100 * duo.wins / duo.games)}% wins in ${duo.games} games together` : "") : "";
     }
@@ -1617,6 +1631,39 @@
         drawProfile();
       } catch {
         body.innerHTML = `<p class="pf-empty">Live stats are offline right now. Try again later.</p>`;
+      }
+    }
+
+    async function refreshProfile(btn) {
+      const rid = current.riotId, before = current.checked || 0;
+      const reload = async () => {
+        const d = await (await fetch(RIOT + "/player/" + encodeURIComponent(rid))).json();
+        if (!current || current.riotId !== rid || d.error) return null;
+        current = d;
+        dd = d.ddragon || dd;
+        return d;
+      };
+      btn.disabled = true;
+      btn.textContent = "Updating…";
+      try {
+        const r = await (await fetch(RIOT + "/update/" + encodeURIComponent(rid), { method: "POST" })).json();
+        if (r.queued) {
+          for (let i = 0; i < 20; i++) {                       // wait for RIOT API to ask Riot (usually a few seconds)
+            await new Promise(res => setTimeout(res, 3000));
+            const d = await reload();
+            if (!d) return;
+            if ((d.checked || 0) > before) break;
+          }
+        } else if (!(await reload())) return;
+        drawProfile();
+        loadCards();
+        const b = body.querySelector(".pf-refresh");
+        b.textContent = "✓ Up to date";
+        b.disabled = true;
+        setTimeout(() => { b.textContent = "↻ Refresh"; b.disabled = false; }, 60000);
+      } catch {
+        btn.textContent = "Couldn't update";
+        setTimeout(() => { btn.textContent = "↻ Refresh"; btn.disabled = false; }, 5000);
       }
     }
 
@@ -1692,6 +1739,7 @@
       body.innerHTML = `
         <div class="pf-head" style="--glow:${tierColor(d.solo?.tier)}">
           <div class="pf-icon">${iconImg(d.icon) ? `<img src="${iconImg(d.icon)}" alt="">` : ""}<span>Level ${d.level ?? "?"}</span></div>
+          <button type="button" class="pf-refresh" title="Get ${esc(name)}'s latest rank and games from Riot">↻ Refresh</button>
           <div><h2>${esc(name)}</h2><div class="tagline">#${esc(tag)} · ${esc(d.region.toUpperCase())}</div>
             ${d.live ? `<div class="pf-live"><span class="live-dot"></span>In game now: ${esc(d.live.champ.name)} · ${esc(d.live.queue)}${d.live.start ? ` · ${Math.max(1, Math.round((Date.now() / 1000 - d.live.start) / 60))} min` : ""}${d.live.with.length ? ` · with ${d.live.with.map(w => esc(w.split("#")[0])).join(", ")}` : ""}</div>` : ""}</div>
         </div>
@@ -1733,6 +1781,7 @@
         </div>
         <p class="pf-foot">Live from Riot · checked ${d.checked ? ago(d.checked) : "just now"}</p>`;
       body.querySelectorAll(".pf-tabs button").forEach(b => b.addEventListener("click", () => { graphQueue = b.dataset.q; drawGraph(); }));
+      body.querySelector(".pf-refresh").addEventListener("click", e => refreshProfile(e.currentTarget));
       body.querySelectorAll(".pf-duo").forEach(b => b.addEventListener("click", () => openProfile(b.dataset.player)));
       body.querySelectorAll(".pf-match.clickable").forEach(row => {
         const go = () => openMatch(row.dataset.match);
@@ -1745,6 +1794,8 @@
     function drawGraph() {
       body.querySelectorAll(".pf-tabs button").forEach(b => b.classList.toggle("active", b.dataset.q === graphQueue));
       const box = document.getElementById("pf-graph");
+      graphW = Math.round(box.clientWidth);
+      if (graphWatch) { graphWatch.disconnect(); graphWatch.observe(box); }
       const pts = current.history[graphQueue].map(h => ({ ...h, v: value(h) }));
       if (!pts.length) {
         box.innerHTML = `<p class="pf-empty">No ${graphQueue === "solo" ? "Solo/Duo" : "Flex"} games recorded yet. The graph fills in as they play ranked.</p>`;
@@ -1788,6 +1839,14 @@
       });
       svg.addEventListener("pointerleave", () => { tip.hidden = true; });
     }
+
+    // Redraw the LP graph when its box changes width (window resized, phone turned sideways).
+    let graphW = 0, resizeTimer = 0;
+    const graphWatch = "ResizeObserver" in window ? new ResizeObserver(entries => {
+      if (Math.abs(Math.round(entries[0].target.clientWidth) - graphW) < 8) return;
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => { if (!overlay.hidden && current && document.getElementById("pf-graph")) drawGraph(); }, 120);
+    }) : null;
 
     loadCards().then(() => {
       const m = location.hash.match(/^#(player|match)\/(.+)$/);
