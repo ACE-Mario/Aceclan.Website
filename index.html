@@ -931,6 +931,7 @@
   .mx-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .mx-name button { background: none; border: none; padding: 0; font: inherit; color: #a78bfa; font-weight: 700; cursor: pointer; }
   .mx-name button:hover { text-decoration: underline; }
+  .mx-row:not(.ace) .mx-name button { color: inherit; font-weight: 600; }
   .mx-name small { display: block; color: #6b7280; font-size: 0.75rem; }
   .mx-kda b { color: #e8e8e8; }
   .mx-kda, .mx-cs { color: #9ca3af; text-align: center; line-height: 1.3; }
@@ -1610,7 +1611,7 @@
     function close() {
       overlay.hidden = true;
       current = null;
-      if (/^#(player|match)\//.test(location.hash)) history.replaceState(null, "", location.pathname + location.search);
+      if (/^#(player|match|someone)\//.test(location.hash)) history.replaceState(null, "", location.pathname + location.search);
     }
     document.getElementById("pf-close").addEventListener("click", close);
     overlay.addEventListener("click", e => { if (e.target === overlay) close(); });
@@ -1628,6 +1629,26 @@
         dd = current.ddragon || dd;
         if (current.error) { body.innerHTML = `<p class="pf-empty">${esc(current.error)}</p>`; return; }
         graphQueue = current.history.solo.length || !current.history.flex.length ? "solo" : "flex";
+        drawProfile();
+      } catch {
+        body.innerHTML = `<p class="pf-empty">Live stats are offline right now. Try again later.</p>`;
+      }
+    }
+
+    // Someone outside ACE, from a game's scoreboard: looked up live from Riot (slower, no LP graph).
+    async function openSomeone(matchId, index, name) {
+      overlay.hidden = false;
+      overlay.scrollTop = 0;
+      history.replaceState(null, "", `#someone/${encodeURIComponent(matchId)}/${index}`);
+      body.innerHTML = `<p class="pf-empty">Asking Riot about ${esc(name || "them")}… this can take up to half a minute.</p>`;
+      try {
+        const r = await fetch(`${RIOT}/someone/${encodeURIComponent(matchId)}/${index}`);
+        if (!r.ok) throw new Error();
+        const d = await r.json();
+        if (d.ace) return openProfile(d.ace);
+        if (d.error) { body.innerHTML = `<p class="pf-empty">${esc(d.error)}</p>`; return; }
+        current = d;
+        dd = d.ddragon || dd;
         drawProfile();
       } catch {
         body.innerHTML = `<p class="pf-empty">Live stats are offline right now. Try again later.</p>`;
@@ -1702,7 +1723,7 @@
           ${ps.map(x => `<div class="mx-row${x.ace ? " ace" : ""}">
             ${champPic(x.champ, x.level, `${x.champ.name}, level ${x.level}`)}
             <div class="mx-runes">${spell(x.spells[0])}${spell(x.spells[1])}</div>
-            <div class="mx-name">${x.ace ? `<button type="button" data-player="${esc(x.ace)}">${esc(x.name)}</button>` : esc(x.name)}
+            <div class="mx-name"><button type="button" data-who="${m.players.indexOf(x)}" title="See ${esc(x.name)}'s profile">${esc(x.name)}</button>
               <small>${rune(x.keystone).replace("<img", '<img style="width:14px;height:14px;display:inline;vertical-align:-3px;margin-right:4px"')}${esc(x.champ.name)}${ROLE_NAMES[x.position] ? " · " + ROLE_NAMES[x.position] : ""}${x.multikill ? ` · <span class="mx-multi">${x.multikill} kill</span>` : ""}</small></div>
             <div class="mx-kda"><b>${x.kills}/${x.deaths}/${x.assists}</b><small>${x.deaths ? ((x.kills + x.assists) / x.deaths).toFixed(1) : "Perfect"} KDA</small></div>
             <div class="mx-cs">${x.cs} CS<small>${(x.cs / mins).toFixed(1)}/min</small></div>
@@ -1716,13 +1737,16 @@
         <div class="mx-head"><h2>${esc(m.queue)}</h2>
           <span>${Math.floor(m.duration / 60)}:${String(m.duration % 60).padStart(2, "0")} · ${when}${ours && !m.remake ? ` · ${esc(ours.name)} ${m.teams.find(t => t.teamId === ours.team)?.win ? "won" : "lost"}` : ""}</span></div>
         ${m.teams.sort((a, b) => (ours && b.teamId === ours.team) - (ours && a.teamId === ours.team)).map(team).join("")}
-        <p class="pf-foot">ACE players are highlighted. Tap a name to see their profile.</p>`;
+        <p class="pf-foot">ACE players are highlighted. Tap any name to see their profile.</p>`;
       body.querySelector(".pf-back")?.addEventListener("click", () => {
         current = back;
         history.replaceState(null, "", "#player/" + encodeURIComponent(back.riotId));
         drawProfile();
       });
-      body.querySelectorAll(".mx-name button").forEach(b => b.addEventListener("click", () => openProfile(b.dataset.player)));
+      body.querySelectorAll(".mx-name button").forEach(b => b.addEventListener("click", () => {
+        const x = m.players[+b.dataset.who];
+        x.ace ? openProfile(x.ace) : openSomeone(id, +b.dataset.who, x.name);
+      }));
     }
 
     function queueBox(label, q) {
@@ -1739,16 +1763,16 @@
       body.innerHTML = `
         <div class="pf-head" style="--glow:${tierColor(d.solo?.tier)}">
           <div class="pf-icon">${iconImg(d.icon) ? `<img src="${iconImg(d.icon)}" alt="">` : ""}<span>Level ${d.level ?? "?"}</span></div>
-          <button type="button" class="pf-refresh" title="Get ${esc(name)}'s latest rank and games from Riot">↻ Refresh</button>
-          <div><h2>${esc(name)}</h2><div class="tagline">#${esc(tag)} · ${esc(d.region.toUpperCase())}</div>
+          ${d.outsider ? "" : `<button type="button" class="pf-refresh" title="Get ${esc(name)}'s latest rank and games from Riot">↻ Refresh</button>`}
+          <div><h2>${esc(name)}</h2><div class="tagline">#${esc(tag)} · ${esc(d.region.toUpperCase())}${d.outsider ? " · Not in ACE" : ""}</div>
             ${d.live ? `<div class="pf-live"><span class="live-dot"></span>In game now: ${esc(d.live.champ.name)} · ${esc(d.live.queue)}${d.live.start ? ` · ${Math.max(1, Math.round((Date.now() / 1000 - d.live.start) / 60))} min` : ""}${d.live.with.length ? ` · with ${d.live.with.map(w => esc(w.split("#")[0])).join(", ")}` : ""}</div>` : ""}</div>
         </div>
         <div class="pf-queues">${queueBox("Ranked Solo/Duo", d.solo)}${queueBox("Ranked Flex", d.flex)}</div>
 
-        <div class="pf-section">
+        ${d.outsider ? "" : `<div class="pf-section">
           <h3>LP history <span class="pf-tabs"><button data-q="solo">Solo/Duo</button><button data-q="flex">Flex</button></span></h3>
           <div class="pf-graph" id="pf-graph"></div>
-        </div>
+        </div>`}
 
         ${d.champions.length ? `<div class="pf-section"><h3>Champions (last ${d.matchCount} games)</h3><div class="pf-champs">
           ${d.champions.map(c => `<div class="pf-champ">${champPic(c)}<div><div class="n">${esc(c.name)}</div>
@@ -1779,16 +1803,16 @@
               <div class="when"><b>${m.remake ? "Remake" : m.win ? "Win" : "Loss"}</b><br>${Math.floor(m.duration / 60)}:${String(m.duration % 60).padStart(2, "0")} · ${ago(m.at)}</div></div>`;
           }).join("")}</div>` : `<p class="pf-empty">No games found yet.</p>`}
         </div>
-        <p class="pf-foot">Live from Riot · checked ${d.checked ? ago(d.checked) : "just now"}</p>`;
+        <p class="pf-foot">Live from Riot · checked ${d.checked ? ago(d.checked) : "just now"}${d.outsider ? ` · last ${d.matchCount} games` : ""}</p>`;
       body.querySelectorAll(".pf-tabs button").forEach(b => b.addEventListener("click", () => { graphQueue = b.dataset.q; drawGraph(); }));
-      body.querySelector(".pf-refresh").addEventListener("click", e => refreshProfile(e.currentTarget));
+      body.querySelector(".pf-refresh")?.addEventListener("click", e => refreshProfile(e.currentTarget));
       body.querySelectorAll(".pf-duo").forEach(b => b.addEventListener("click", () => openProfile(b.dataset.player)));
       body.querySelectorAll(".pf-match.clickable").forEach(row => {
         const go = () => openMatch(row.dataset.match);
         row.addEventListener("click", go);
         row.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
       });
-      drawGraph();
+      if (!d.outsider) drawGraph();
     }
 
     function drawGraph() {
@@ -1849,8 +1873,9 @@
     }) : null;
 
     loadCards().then(() => {
-      const m = location.hash.match(/^#(player|match)\/(.+)$/);
+      const m = location.hash.match(/^#(player|match)\/(.+)$/), who = location.hash.match(/^#someone\/([^/]+)\/(\d+)$/);
       if (m) (m[1] === "player" ? openProfile : openMatch)(decodeURIComponent(m[2]));
+      else if (who) openSomeone(decodeURIComponent(who[1]), +who[2]);
     });
     setInterval(loadCards, 60 * 1000);
   })();
