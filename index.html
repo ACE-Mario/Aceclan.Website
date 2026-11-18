@@ -893,6 +893,62 @@
   .pf-match .info { color: #9ca3af; font-size: 0.8rem; }
   .pf-match .when { text-align: right; color: #6b7280; font-size: 0.8rem; }
   .pf-match.win .when b { color: #3fbf7f; } .pf-match.loss .when b { color: #ff4655; }
+  .player-card .ingame { position: relative; display: inline-flex; align-items: center; gap: 6px; margin-top: 10px;
+    padding: 3px 10px; border-radius: 999px; background: rgba(63, 191, 127, 0.12); border: 1px solid rgba(63, 191, 127, 0.5);
+    color: #3fbf7f; font-size: 0.8rem; font-weight: 600; }
+  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #3fbf7f; flex: none; animation: live-pulse 1.6s infinite; }
+  @keyframes live-pulse { 0% { box-shadow: 0 0 0 0 rgba(63, 191, 127, 0.7); } 70% { box-shadow: 0 0 0 7px rgba(63, 191, 127, 0); } 100% { box-shadow: 0 0 0 0 rgba(63, 191, 127, 0); } }
+  @media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
+  .pf-live { display: flex; align-items: center; gap: 8px; margin-top: 6px; color: #3fbf7f; font-weight: 600; font-size: 0.9rem; }
+  .pf-duos { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+  .pf-duo > span:first-child { font-weight: 600; }
+  .pf-duo { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2px 10px; background: #151823; border: 1px solid #2e2f3e;
+    border-radius: 8px; padding: 9px 12px; color: #e8e8e8; font: inherit; text-align: left; cursor: pointer; }
+  .pf-duo:hover { border-color: #7c3aed; }
+  .pf-duo .s { color: #9ca3af; font-size: 0.8rem; white-space: nowrap; }
+  .pf-duo .s b { color: #e8e8e8; }
+  .pf-match.clickable { cursor: pointer; }
+  .pf-match.clickable:hover { border-color: #7c3aed; }
+  .pf-match .mates { color: #a78bfa; }
+  .pf-back { background: none; border: 1px solid #2e2f3e; color: #9ca3af; border-radius: 6px; padding: 4px 12px; font: inherit;
+    font-size: 0.85rem; cursor: pointer; margin-bottom: 14px; }
+  .pf-back:hover { color: #e8e8e8; border-color: #7c3aed; }
+  .mx-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 14px; padding-right: 30px; }
+  .mx-head h2 { margin: 0; font-size: 1.4rem; color: #e8e8e8; }
+  .mx-head span { color: #9ca3af; font-size: 0.9rem; }
+  .mx-team { margin-top: 14px; border: 1px solid #2e2f3e; border-top: 3px solid var(--tc); border-radius: 8px; overflow: hidden; }
+  .mx-team.win { --tc: #3fbf7f; } .mx-team.loss { --tc: #ff4655; } .mx-team.remake { --tc: #6b7280; }
+  .mx-team-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 14px; padding: 8px 12px; background: #151823; font-size: 0.85rem; color: #9ca3af; }
+  .mx-team-head b { color: var(--tc); font-size: 0.95rem; letter-spacing: 1px; text-transform: uppercase; }
+  .mx-bans { display: inline-flex; gap: 3px; vertical-align: middle; }
+  .mx-bans img { width: 20px; height: 20px; border-radius: 4px; filter: grayscale(1); opacity: 0.7; }
+  .mx-row { display: grid; grid-template-columns: 42px 22px minmax(0, 1fr) 92px 64px 110px 166px; align-items: center; gap: 8px;
+    padding: 6px 12px; border-top: 1px solid #22252f; font-size: 0.85rem; }
+  .mx-row.ace { background: rgba(124, 58, 237, 0.12); }
+  .mx-row .champ-pic { width: 42px; height: 42px; }
+  .mx-runes { display: grid; grid-template-columns: 1fr; gap: 2px; }
+  .mx-runes img { width: 20px; height: 20px; border-radius: 4px; display: block; background: #0d0f14; }
+  .mx-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mx-name button { background: none; border: none; padding: 0; font: inherit; color: #a78bfa; font-weight: 700; cursor: pointer; }
+  .mx-name button:hover { text-decoration: underline; }
+  .mx-name small { display: block; color: #6b7280; font-size: 0.75rem; }
+  .mx-kda b { color: #e8e8e8; }
+  .mx-kda, .mx-cs { color: #9ca3af; text-align: center; line-height: 1.3; }
+  .mx-cs small, .mx-kda small { display: block; font-size: 0.72rem; }
+  .mx-dmg { font-size: 0.78rem; color: #9ca3af; }
+  .mx-dmg .bar { height: 6px; background: #22252f; border-radius: 3px; overflow: hidden; margin-top: 3px; }
+  .mx-dmg .bar i { display: block; height: 100%; background: #ff4655; }
+  .mx-items { display: flex; gap: 2px; }
+  .mx-items span { width: 22px; height: 22px; border-radius: 4px; background: #0d0f14; border: 1px solid #22252f; overflow: hidden; flex: none; }
+  .mx-items img { width: 100%; height: 100%; display: block; }
+  .mx-multi { color: #c89b3c; font-size: 0.72rem; font-weight: 700; }
+  @media (max-width: 720px) {
+    .mx-row { grid-template-columns: 38px 20px minmax(0, 1fr) 70px; row-gap: 4px; }
+    .mx-row .champ-pic { width: 38px; height: 38px; }
+    .mx-row .mx-cs { display: none; }
+    .mx-row .mx-dmg { grid-column: 3 / 5; }
+    .mx-row .mx-items { grid-column: 3 / 5; }
+  }
   .pf-foot { margin-top: 18px; color: #6b7280; font-size: 0.78rem; text-align: center; }
   @media (max-width: 520px) {
     .pf-modal { padding: 20px 14px; }
@@ -1487,6 +1543,18 @@
           card.querySelector(".links").before(row);
         }
         row.innerHTML = (d.mastery || []).map(m => champPic(m, m.level, `${m.name}: mastery ${m.level}, ${m.points.toLocaleString()} points`)).join("");
+        let badge = card.querySelector(".ingame");
+        if (d.live) {
+          if (!badge) {
+            badge = document.createElement("div");
+            badge.className = "ingame";
+            card.querySelector(".links").before(badge);
+          }
+          badge.innerHTML = `<span class="live-dot"></span>Playing ${esc(d.live.champ.name)} · ${esc(d.live.queue)}`;
+          badge.title = d.live.with.length ? `With ${d.live.with.map(w => w.split("#")[0]).join(", ")}` : "";
+        } else if (badge) {
+          badge.remove();
+        }
         if (!card.querySelector(".pf-open")) {
           const b = document.createElement("button");
           b.className = "pf-open";
@@ -1507,7 +1575,11 @@
         top.textContent = best.solo.rank.replace(/^(\w)\w*/, m => m.length > 4 ? m.slice(0, 4) : m);
         top.title = `${best.solo.rank} ${best.solo.lp} LP (${who.split("#")[0]})`;
       }
-      note.innerHTML = live ? `<span class="dot"></span>League stats are live from Riot. Tap a player for their profile.` : "";
+      const inGame = Object.values(data.players || {}).filter(d => d.live).length;
+      const duo = data.bestDuo;
+      note.innerHTML = live ? `<span class="dot"></span>League stats are live from Riot. Tap a player for their profile.`
+        + (inGame ? ` <b>${inGame} in game now.</b>` : "")
+        + (duo ? `<br>Best duo: <b>${duo.players.map(n => esc(n.split("#")[0])).join(" + ")}</b> · ${Math.round(100 * duo.wins / duo.games)}% wins in ${duo.games} games together` : "") : "";
     }
 
     async function loadCards() {
@@ -1524,7 +1596,7 @@
     function close() {
       overlay.hidden = true;
       current = null;
-      if (location.hash.startsWith("#player/")) history.replaceState(null, "", location.pathname + location.search);
+      if (/^#(player|match)\//.test(location.hash)) history.replaceState(null, "", location.pathname + location.search);
     }
     document.getElementById("pf-close").addEventListener("click", close);
     overlay.addEventListener("click", e => { if (e.target === overlay) close(); });
@@ -1532,6 +1604,7 @@
 
     async function openProfile(rid) {
       overlay.hidden = false;
+      overlay.scrollTop = 0;
       history.replaceState(null, "", "#player/" + encodeURIComponent(rid));
       body.innerHTML = `<p class="pf-empty">Loading ${esc(rid.split("#")[0])}…</p>`;
       try {
@@ -1545,6 +1618,64 @@
       } catch {
         body.innerHTML = `<p class="pf-empty">Live stats are offline right now. Try again later.</p>`;
       }
+    }
+
+    // Full scoreboard of one game.
+    async function openMatch(id) {
+      const back = current;
+      overlay.hidden = false;
+      overlay.scrollTop = 0;
+      history.replaceState(null, "", "#match/" + encodeURIComponent(id));
+      body.innerHTML = `<p class="pf-empty">Loading the game…</p>`;
+      let m;
+      try {
+        const r = await fetch(RIOT + "/match/" + encodeURIComponent(id));
+        if (!r.ok) throw new Error();
+        m = await r.json();
+      } catch {
+        body.innerHTML = `<p class="pf-empty">Couldn't load that game. Live stats may be offline.</p>`;
+        return;
+      }
+      dd = m.ddragon || dd;
+      const img = (kind, file) => file && dd ? `https://ddragon.leagueoflegends.com/cdn/${dd}/img/${kind}/${file}` : "";
+      const rune = r => r ? `<img src="https://ddragon.leagueoflegends.com/cdn/img/${esc(r.icon)}" alt="" title="${esc(r.name)}">` : "<img alt=\"\">";
+      const spell = s => s ? `<img src="${img("spell", s.id + ".png")}" alt="" title="${esc(s.name)}">` : "<img alt=\"\">";
+      const mins = Math.max(m.duration / 60, 1);
+      const maxDmg = Math.max(...m.players.map(x => x.damage || 0), 1);
+      const ours = back && m.players.find(x => x.ace === back.riotId);
+      const team = t => {
+        const ps = m.players.filter(x => x.team === t.teamId);
+        const kills = ps.reduce((a, x) => a + x.kills, 0), gold = ps.reduce((a, x) => a + (x.gold || 0), 0);
+        const o = t.objectives || {};
+        const res = m.remake ? "remake" : t.win ? "win" : "loss";
+        return `<div class="mx-team ${res}">
+          <div class="mx-team-head"><span><b>${m.remake ? "Remake" : t.win ? "Victory" : "Defeat"}</b> · ${t.teamId === 100 ? "Blue" : "Red"} side</span>
+            <span>${kills} kills · ${short(gold)} gold · ${o.tower ?? 0} towers · ${o.dragon ?? 0} dragons · ${o.baron ?? 0} barons${o.horde ? ` · ${o.horde} grubs` : ""}</span>
+            ${t.bans.length ? `<span>Bans <span class="mx-bans">${t.bans.map(c => champImg(c) ? `<img src="${champImg(c)}" alt="${esc(c.name)}" title="${esc(c.name)}">` : "").join("")}</span></span>` : ""}</div>
+          ${ps.map(x => `<div class="mx-row${x.ace ? " ace" : ""}">
+            ${champPic(x.champ, x.level, `${x.champ.name}, level ${x.level}`)}
+            <div class="mx-runes">${spell(x.spells[0])}${spell(x.spells[1])}</div>
+            <div class="mx-name">${x.ace ? `<button type="button" data-player="${esc(x.ace)}">${esc(x.name)}</button>` : esc(x.name)}
+              <small>${rune(x.keystone).replace("<img", '<img style="width:14px;height:14px;display:inline;vertical-align:-3px;margin-right:4px"')}${esc(x.champ.name)}${ROLE_NAMES[x.position] ? " · " + ROLE_NAMES[x.position] : ""}${x.multikill ? ` · <span class="mx-multi">${x.multikill} kill</span>` : ""}</small></div>
+            <div class="mx-kda"><b>${x.kills}/${x.deaths}/${x.assists}</b><small>${x.deaths ? ((x.kills + x.assists) / x.deaths).toFixed(1) : "Perfect"} KDA</small></div>
+            <div class="mx-cs">${x.cs} CS<small>${(x.cs / mins).toFixed(1)}/min</small></div>
+            <div class="mx-dmg">${(x.damage || 0).toLocaleString()} dmg · ${x.vision ?? 0} vis<div class="bar"><i style="width:${Math.round(100 * (x.damage || 0) / maxDmg)}%"></i></div></div>
+            <div class="mx-items">${x.items.map((it, i) => `<span${i === 6 ? ' style="margin-left:4px;border-radius:50%"' : ""}>${it ? `<img src="${img("item", it + ".png")}" alt="" loading="lazy">` : ""}</span>`).join("")}</div>
+          </div>`).join("")}</div>`;
+      };
+      const when = new Date(m.at * 1000).toLocaleString(undefined, { weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });
+      body.innerHTML = `
+        ${back ? `<button type="button" class="pf-back">← Back to ${esc(back.riotId.split("#")[0])}</button>` : ""}
+        <div class="mx-head"><h2>${esc(m.queue)}</h2>
+          <span>${Math.floor(m.duration / 60)}:${String(m.duration % 60).padStart(2, "0")} · ${when}${ours && !m.remake ? ` · ${esc(ours.name)} ${m.teams.find(t => t.teamId === ours.team)?.win ? "won" : "lost"}` : ""}</span></div>
+        ${m.teams.sort((a, b) => (ours && b.teamId === ours.team) - (ours && a.teamId === ours.team)).map(team).join("")}
+        <p class="pf-foot">ACE players are highlighted. Tap a name to see their profile.</p>`;
+      body.querySelector(".pf-back")?.addEventListener("click", () => {
+        current = back;
+        history.replaceState(null, "", "#player/" + encodeURIComponent(back.riotId));
+        drawProfile();
+      });
+      body.querySelectorAll(".mx-name button").forEach(b => b.addEventListener("click", () => openProfile(b.dataset.player)));
     }
 
     function queueBox(label, q) {
@@ -1561,7 +1692,8 @@
       body.innerHTML = `
         <div class="pf-head" style="--glow:${tierColor(d.solo?.tier)}">
           <div class="pf-icon">${iconImg(d.icon) ? `<img src="${iconImg(d.icon)}" alt="">` : ""}<span>Level ${d.level ?? "?"}</span></div>
-          <div><h2>${esc(name)}</h2><div class="tagline">#${esc(tag)} · ${esc(d.region.toUpperCase())}</div></div>
+          <div><h2>${esc(name)}</h2><div class="tagline">#${esc(tag)} · ${esc(d.region.toUpperCase())}</div>
+            ${d.live ? `<div class="pf-live"><span class="live-dot"></span>In game now: ${esc(d.live.champ.name)} · ${esc(d.live.queue)}${d.live.start ? ` · ${Math.max(1, Math.round((Date.now() / 1000 - d.live.start) / 60))} min` : ""}${d.live.with.length ? ` · with ${d.live.with.map(w => esc(w.split("#")[0])).join(", ")}` : ""}</div>` : ""}</div>
         </div>
         <div class="pf-queues">${queueBox("Ranked Solo/Duo", d.solo)}${queueBox("Ranked Flex", d.flex)}</div>
 
@@ -1573,6 +1705,11 @@
         ${d.champions.length ? `<div class="pf-section"><h3>Champions (last ${d.matchCount} games)</h3><div class="pf-champs">
           ${d.champions.map(c => `<div class="pf-champ">${champPic(c)}<div><div class="n">${esc(c.name)}</div>
             <div class="s">${c.games} game${c.games === 1 ? "" : "s"} · ${Math.round(100 * c.wins / c.games)}% · ${kda(c)} KDA</div></div></div>`).join("")}
+        </div></div>` : ""}
+
+        ${d.duos.length ? `<div class="pf-section"><h3>Played with</h3><div class="pf-duos">
+          ${d.duos.map(x => `<button type="button" class="pf-duo" data-player="${esc(x.riotId)}"><span>${esc(x.riotId.split("#")[0])}</span>
+            <span class="s"><b>${x.games}</b> game${x.games === 1 ? "" : "s"} · <b>${Math.round(100 * x.wins / x.games)}%</b> wins</span></button>`).join("")}
         </div></div>` : ""}
 
         ${roleTotal ? `<div class="pf-section"><h3>Roles</h3><div class="pf-roles">
@@ -1588,14 +1725,20 @@
           ${d.matches.length ? `<div class="pf-matches">${d.matches.map(m => {
             const res = m.remake ? "remake" : m.win ? "win" : "loss";
             const mins = Math.max(m.duration / 60, 1);
-            return `<div class="pf-match ${res}"><span class="res"></span>${champPic(m.champ)}
+            return `<div class="pf-match ${res}${m.detail ? " clickable" : ""}" ${m.detail ? `data-match="${esc(m.id)}" role="button" tabindex="0" title="See the full scoreboard"` : ""}><span class="res"></span>${champPic(m.champ)}
               <div><div><span class="kda">${m.kills} / ${m.deaths} / ${m.assists}</span> · ${esc(m.champ.name)}</div>
-              <div class="info">${esc(m.queue)}${ROLE_NAMES[m.position] ? " · " + ROLE_NAMES[m.position] : ""} · ${m.cs} CS (${(m.cs / mins).toFixed(1)}/min) · ${short(m.damage)} dmg</div></div>
+              <div class="info">${m.with.length ? `<span class="mates">with ${m.with.map(w => esc(w.split("#")[0])).join(", ")}</span> · ` : ""}${esc(m.queue)}${ROLE_NAMES[m.position] ? " · " + ROLE_NAMES[m.position] : ""} · ${m.cs} CS (${(m.cs / mins).toFixed(1)}/min) · ${short(m.damage)} dmg</div></div>
               <div class="when"><b>${m.remake ? "Remake" : m.win ? "Win" : "Loss"}</b><br>${Math.floor(m.duration / 60)}:${String(m.duration % 60).padStart(2, "0")} · ${ago(m.at)}</div></div>`;
           }).join("")}</div>` : `<p class="pf-empty">No games found yet.</p>`}
         </div>
         <p class="pf-foot">Live from Riot · checked ${d.checked ? ago(d.checked) : "just now"}</p>`;
       body.querySelectorAll(".pf-tabs button").forEach(b => b.addEventListener("click", () => { graphQueue = b.dataset.q; drawGraph(); }));
+      body.querySelectorAll(".pf-duo").forEach(b => b.addEventListener("click", () => openProfile(b.dataset.player)));
+      body.querySelectorAll(".pf-match.clickable").forEach(row => {
+        const go = () => openMatch(row.dataset.match);
+        row.addEventListener("click", go);
+        row.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+      });
       drawGraph();
     }
 
@@ -1647,10 +1790,10 @@
     }
 
     loadCards().then(() => {
-      const m = location.hash.match(/^#player\/(.+)$/);
-      if (m) openProfile(decodeURIComponent(m[1]));
+      const m = location.hash.match(/^#(player|match)\/(.+)$/);
+      if (m) (m[1] === "player" ? openProfile : openMatch)(decodeURIComponent(m[2]));
     });
-    setInterval(loadCards, 5 * 60 * 1000);
+    setInterval(loadCards, 60 * 1000);
   })();
 </script>
 
