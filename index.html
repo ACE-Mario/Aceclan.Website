@@ -1640,7 +1640,7 @@
       overlay.hidden = false;
       overlay.scrollTop = 0;
       history.replaceState(null, "", `#someone/${encodeURIComponent(matchId)}/${index}`);
-      body.innerHTML = `<p class="pf-empty">Asking Riot about ${esc(name || "them")}… this can take up to half a minute.</p>`;
+      body.innerHTML = `<p class="pf-empty">Asking Riot about ${esc(name || "them")}…</p>`;
       try {
         const r = await fetch(`${RIOT}/someone/${encodeURIComponent(matchId)}/${index}`);
         if (!r.ok) throw new Error();
