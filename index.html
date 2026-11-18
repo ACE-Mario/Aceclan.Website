@@ -828,7 +828,7 @@
   .player-card .lol-rank .lp { color: #e8e8e8; }
   .player-card .lol-rank .wr { color: #6b7280; font-size: 0.8rem; }
   .player-card .mastery { position: relative; display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
-  .champ-pic { position: relative; width: 34px; height: 34px; flex: none; }
+  .champ-pic { position: relative; display: block; width: 34px; height: 34px; flex: none; }
   .champ-pic img { width: 100%; height: 100%; border-radius: 6px; border: 1px solid #2e2f3e; display: block; }
   .champ-pic b {
     position: absolute; right: -5px; bottom: -5px; min-width: 16px; height: 16px; padding: 0 3px;
@@ -875,7 +875,8 @@
   .pf-champ .n { font-weight: 600; }
   .pf-champ .s { color: #9ca3af; font-size: 0.8rem; }
   .pf-mastery { display: flex; flex-wrap: wrap; gap: 14px 12px; }
-  .pf-mastery .m { width: 64px; text-align: center; font-size: 0.75rem; color: #9ca3af; }
+  .pf-mastery .m { width: 64px; text-align: center; font-size: 0.75rem; color: #9ca3af; line-height: 1.35; }
+  .pf-mastery .m .lvl { display: block; color: #c89b3c; }
   .pf-mastery .champ-pic { width: 48px; height: 48px; margin: 0 auto 6px; }
   .pf-roles { display: flex; flex-direction: column; gap: 6px; }
   .pf-role { display: grid; grid-template-columns: 70px 1fr 40px; align-items: center; gap: 10px; font-size: 0.85rem; color: #9ca3af; }
@@ -1580,7 +1581,7 @@
         </div></div>` : ""}
 
         ${d.mastery.length ? `<div class="pf-section"><h3>Top mastery</h3><div class="pf-mastery">
-          ${d.mastery.map(m => `<div class="m">${champPic(m, m.level)}${short(m.points)}</div>`).join("")}
+          ${d.mastery.map(m => `<div class="m">${champPic(m, null, `${m.name}: ${m.points.toLocaleString()} points`)}<b class="lvl">Level ${m.level}</b>${short(m.points)} pts</div>`).join("")}
         </div></div>` : ""}
 
         <div class="pf-section"><h3>Recent games</h3>
