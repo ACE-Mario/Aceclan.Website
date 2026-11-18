@@ -823,6 +823,81 @@
     letter-spacing: 6px;
     color: #a78bfa;
   }
+
+  /* Live League stats (RIOT API) */
+  .player-card .lol-rank .lp { color: #e8e8e8; }
+  .player-card .lol-rank .wr { color: #6b7280; font-size: 0.8rem; }
+  .player-card .mastery { position: relative; display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+  .champ-pic { position: relative; width: 34px; height: 34px; flex: none; }
+  .champ-pic img { width: 100%; height: 100%; border-radius: 6px; border: 1px solid #2e2f3e; display: block; }
+  .champ-pic b {
+    position: absolute; right: -5px; bottom: -5px; min-width: 16px; height: 16px; padding: 0 3px;
+    border-radius: 8px; background: #c89b3c; color: #111; font-size: 0.68rem; line-height: 16px; text-align: center;
+  }
+  .player-card.has-profile { cursor: pointer; }
+  .player-card .links .pf-open {
+    color: #e8e8e8; background: #7c3aed; padding: 6px 14px; border: none; border-radius: 6px;
+    font: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+  }
+  .player-card .links .pf-open:hover { background: #8b5cf6; }
+  .live-note { text-align: center; color: #6b7280; font-size: 0.8rem; margin-top: 14px; min-height: 1em; }
+  .live-note .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #3fbf7f;
+    margin-right: 6px; box-shadow: 0 0 8px #3fbf7f; }
+
+  .pf-modal { max-width: 860px; padding: 24px 22px; text-align: left; color: #e8e8e8; }
+  .pf-head { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; padding-right: 30px; }
+  .pf-icon { position: relative; width: 78px; height: 78px; flex: none; }
+  .pf-icon img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--glow, #7c3aed); }
+  .pf-icon span { position: absolute; left: 50%; bottom: -8px; transform: translateX(-50%); background: #1a1d29;
+    border: 1px solid #2e2f3e; border-radius: 999px; padding: 0 8px; font-size: 0.75rem; color: #9ca3af; white-space: nowrap; }
+  .pf-head h2 { margin: 0; font-size: 1.6rem; color: #e8e8e8; letter-spacing: 1px; }
+  .pf-head .tagline { color: #6b7280; }
+  .pf-queues { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 18px; }
+  .pf-queue { background: #151823; border: 1px solid #2e2f3e; border-left: 3px solid var(--qc, #2e2f3e);
+    border-radius: 8px; padding: 12px 14px; }
+  .pf-queue small { display: block; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; font-size: 0.72rem; }
+  .pf-queue strong { font-size: 1.25rem; color: var(--qc, #e8e8e8); }
+  .pf-queue .sub { color: #9ca3af; font-size: 0.85rem; }
+  .pf-section { margin-top: 20px; }
+  .pf-section h3 { margin: 0 0 10px; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; color: #a78bfa;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .pf-tabs { display: inline-flex; gap: 4px; margin-left: auto; }
+  .pf-tabs button { background: #151823; color: #9ca3af; border: 1px solid #2e2f3e; border-radius: 6px; padding: 3px 10px;
+    font: inherit; font-size: 0.75rem; letter-spacing: 1px; cursor: pointer; }
+  .pf-tabs button.active { background: #7c3aed; color: #fff; border-color: #7c3aed; }
+  .pf-graph { position: relative; background: #151823; border: 1px solid #2e2f3e; border-radius: 8px; padding: 8px; }
+  .pf-graph svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .pf-graph .tip { position: absolute; pointer-events: none; background: #0d0f14; border: 1px solid #7c3aed; border-radius: 6px;
+    padding: 4px 8px; font-size: 0.8rem; white-space: nowrap; transform: translate(-50%, -120%); }
+  .pf-empty { color: #6b7280; font-size: 0.9rem; padding: 14px; text-align: center; }
+  .pf-champs { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+  .pf-champ { display: flex; align-items: center; gap: 10px; background: #151823; border: 1px solid #2e2f3e; border-radius: 8px; padding: 8px 10px; }
+  .pf-champ .n { font-weight: 600; }
+  .pf-champ .s { color: #9ca3af; font-size: 0.8rem; }
+  .pf-mastery { display: flex; flex-wrap: wrap; gap: 14px 12px; }
+  .pf-mastery .m { width: 64px; text-align: center; font-size: 0.75rem; color: #9ca3af; }
+  .pf-mastery .champ-pic { width: 48px; height: 48px; margin: 0 auto 6px; }
+  .pf-roles { display: flex; flex-direction: column; gap: 6px; }
+  .pf-role { display: grid; grid-template-columns: 70px 1fr 40px; align-items: center; gap: 10px; font-size: 0.85rem; color: #9ca3af; }
+  .pf-role .bar { height: 8px; background: #151823; border-radius: 4px; overflow: hidden; }
+  .pf-role .bar i { display: block; height: 100%; background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+  .pf-matches { display: flex; flex-direction: column; gap: 6px; }
+  .pf-match { display: grid; grid-template-columns: 6px 40px 1fr auto; align-items: center; gap: 10px;
+    background: #151823; border: 1px solid #2e2f3e; border-radius: 8px; padding: 6px 10px 6px 0; overflow: hidden; }
+  .pf-match .res { align-self: stretch; background: #6b7280; }
+  .pf-match.win .res { background: #3fbf7f; }
+  .pf-match.loss .res { background: #ff4655; }
+  .pf-match .champ-pic { width: 40px; height: 40px; }
+  .pf-match .kda { font-weight: 700; }
+  .pf-match .info { color: #9ca3af; font-size: 0.8rem; }
+  .pf-match .when { text-align: right; color: #6b7280; font-size: 0.8rem; }
+  .pf-match.win .when b { color: #3fbf7f; } .pf-match.loss .when b { color: #ff4655; }
+  .pf-foot { margin-top: 18px; color: #6b7280; font-size: 0.78rem; text-align: center; }
+  @media (max-width: 520px) {
+    .pf-modal { padding: 20px 14px; }
+    .pf-match { grid-template-columns: 5px 36px 1fr; }
+    .pf-match .when { grid-column: 3; text-align: left; }
+  }
 </style>
 </head>
 <body>
@@ -916,7 +991,7 @@
   Waylay: "df1cb487-4902-002e-5c17-d28e83e78588",
   Yoru: "7f94d92c-4234-0a36-9646-3a87eb8b5c89",
 };
-  const leaguePic = p => p.icon ? ddragon + p.icon + ".png" : null;
+  const leaguePic = p => p.iconUrl || (p.icon ? ddragon + p.icon + ".png" : null);
   const agentPic = p => agents[p.agent] ? `https://media.valorant-api.com/agents/${agents[p.agent]}/displayicon.png` : null;
 
   // Which picture a card shows for the current filter.
@@ -967,7 +1042,7 @@
         <span class="badge">${p.region.toUpperCase()}</span>
         ${(p.roles || []).map(r => `<span class="badge">${r}</span>`).join("")}
       </div>
-      ${p.rank ? `<div class="rank">League: <strong>${p.rank}</strong></div>` : ""}
+      ${p.rank ? `<div class="rank lol-rank">League: <strong>${p.rank}</strong></div>` : ""}
       ${p.agent ? `<div class="rank">Main agent: <strong class="agent">${p.agent}</strong></div>` : ""}
       <div class="links">
         ${p.games.includes("valorant") ? `<a href="https://tracker.gg/valorant/profile/riot/${riotId}/overview" target="_blank" rel="noopener">Tracker</a>` : ""}
@@ -1337,6 +1412,244 @@
     resize();
     window.addEventListener("resize", resize);
     frame();
+  })();
+</script>
+
+
+<div class="tl-overlay" id="pf" hidden>
+  <div class="tl-modal pf-modal" role="dialog" aria-modal="true" aria-label="Player profile">
+    <button class="tl-close" id="pf-close" aria-label="Close">&times;</button>
+    <div id="pf-body"></div>
+  </div>
+</div>
+
+<script>
+  // Live League stats from RIOT API: a program on the clan PC, reached at riot.aceclan.lol.
+  // If it's offline, the cards simply keep the ranks typed into the players list.
+  (() => {
+    const LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    const RIOT = LOCAL ? "http://localhost:5080" : "https://riot.aceclan.lol";
+    const TIERS = ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "EMERALD", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"];
+    const ROLE_NAMES = { TOP: "Top", JUNGLE: "Jungle", MIDDLE: "Mid", BOTTOM: "ADC", UTILITY: "Support" };
+    let dd = "";
+    const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+    const champImg = c => c && c.id && dd ? `https://ddragon.leagueoflegends.com/cdn/${dd}/img/champion/${c.id}.png` : "";
+    const iconImg = n => n != null && dd ? `https://ddragon.leagueoflegends.com/cdn/${dd}/img/profileicon/${n}.png` : "";
+    const short = n => n >= 1e6 ? (n / 1e6).toFixed(1).replace(/\.0$/, "") + "M" : n >= 1e4 ? Math.round(n / 1e3) + "k" : String(n ?? 0);
+    const games = q => q.wins + q.losses;
+    const winrate = q => games(q) ? Math.round(100 * q.wins / games(q)) : 0;
+    const tierColor = tier => RANK_COLORS[String(tier || "").toLowerCase()] || "#7c3aed";
+    // One number for a rank, so it can go on a graph: 100 per division, LP on top.
+    const value = r => { const t = TIERS.indexOf(r.tier); return t >= 7 ? 2800 + r.lp : t * 400 + (4 - r.division) * 100 + r.lp; };
+    const nameAt = v => {
+      if (v >= 2800) return "Master+";
+      const t = Math.floor(v / 400), d = 4 - Math.floor((v % 400) / 100);
+      return `${TIERS[t][0] + TIERS[t].slice(1).toLowerCase()} ${d}`;
+    };
+    const ago = s => {
+      const m = Math.round((Date.now() / 1000 - s) / 60);
+      return m < 60 ? `${Math.max(m, 1)}m ago` : m < 1440 ? `${Math.round(m / 60)}h ago` : `${Math.round(m / 1440)}d ago`;
+    };
+    const champPic = (c, badge, title) => `<span class="champ-pic" title="${esc(title || c.name)}">${champImg(c) ? `<img src="${champImg(c)}" alt="${esc(c.name)}" loading="lazy">` : ""}${badge != null ? `<b>${esc(badge)}</b>` : ""}</span>`;
+
+    const byId = new Map(cards.filter(c => c.p.games.includes("league")).map(c => [`${c.p.name}#${c.p.tag}`.toLowerCase(), c]));
+    const note = document.createElement("p");
+    note.className = "live-note";
+    document.getElementById("player-grid").after(note);
+
+    // ---- Cards ----
+    function updateCards(data) {
+      dd = data.ddragon || dd;
+      let live = 0;
+      for (const [rid, d] of Object.entries(data.players || {})) {
+        const c = byId.get(rid.toLowerCase());
+        if (!c || d.error) continue;
+        live++;
+        const { p, card } = c;
+        if (d.icon != null) p.iconUrl = iconImg(d.icon);
+        if (d.solo) p.rank = d.solo.rank;
+        card.style.setProperty("--glow", rankColor(p));
+        let line = card.querySelector(".lol-rank");
+        if (d.solo) {
+          if (!line) {
+            line = document.createElement("div");
+            line.className = "rank lol-rank";
+            card.querySelector(".links").before(line);
+          }
+          line.innerHTML = `League: <strong>${esc(d.solo.rank)}</strong> <span class="lp">${d.solo.lp} LP</span>
+            <span class="wr">· ${winrate(d.solo)}% of ${games(d.solo)}</span>`;
+        }
+        let row = card.querySelector(".mastery");
+        if (!row) {
+          row = document.createElement("div");
+          row.className = "mastery";
+          card.querySelector(".links").before(row);
+        }
+        row.innerHTML = (d.mastery || []).map(m => champPic(m, m.level, `${m.name}: mastery ${m.level}, ${m.points.toLocaleString()} points`)).join("");
+        if (!card.querySelector(".pf-open")) {
+          const b = document.createElement("button");
+          b.className = "pf-open";
+          b.type = "button";
+          b.textContent = "Profile";
+          card.querySelector(".links").prepend(b);
+          card.classList.add("has-profile");
+          card.addEventListener("click", e => { if (!e.target.closest("a")) openProfile(`${p.name}#${p.tag}`); });
+        }
+      }
+      // Refresh pictures (keeping the current filter) and the hero's top rank.
+      applyFilter(document.querySelector("#filters button.active")?.dataset.game || "all");
+      const ranked = Object.values(data.players || {}).filter(d => d.solo);
+      if (ranked.length) {
+        const best = ranked.reduce((a, b) => value(b.solo) > value(a.solo) ? b : a);
+        const who = Object.keys(data.players).find(k => data.players[k] === best);
+        const top = document.getElementById("stat-top");
+        top.textContent = best.solo.rank.replace(/^(\w)\w*/, m => m.length > 4 ? m.slice(0, 4) : m);
+        top.title = `${best.solo.rank} ${best.solo.lp} LP (${who.split("#")[0]})`;
+      }
+      note.innerHTML = live ? `<span class="dot"></span>League stats are live from Riot. Tap a player for their profile.` : "";
+    }
+
+    async function loadCards() {
+      try {
+        const r = await fetch(RIOT + "/players");
+        if (r.ok) updateCards(await r.json());
+      } catch { /* RIOT API is offline: keep the typed-in ranks */ }
+    }
+
+    // ---- Profile ----
+    const overlay = document.getElementById("pf"), body = document.getElementById("pf-body");
+    let current = null, graphQueue = "solo";
+
+    function close() {
+      overlay.hidden = true;
+      current = null;
+      if (location.hash.startsWith("#player/")) history.replaceState(null, "", location.pathname + location.search);
+    }
+    document.getElementById("pf-close").addEventListener("click", close);
+    overlay.addEventListener("click", e => { if (e.target === overlay) close(); });
+    addEventListener("keydown", e => { if (e.key === "Escape" && !overlay.hidden) close(); });
+
+    async function openProfile(rid) {
+      overlay.hidden = false;
+      history.replaceState(null, "", "#player/" + encodeURIComponent(rid));
+      body.innerHTML = `<p class="pf-empty">Loading ${esc(rid.split("#")[0])}…</p>`;
+      try {
+        const r = await fetch(RIOT + "/player/" + encodeURIComponent(rid));
+        if (!r.ok) throw new Error();
+        current = await r.json();
+        dd = current.ddragon || dd;
+        if (current.error) { body.innerHTML = `<p class="pf-empty">${esc(current.error)}</p>`; return; }
+        graphQueue = current.history.solo.length || !current.history.flex.length ? "solo" : "flex";
+        drawProfile();
+      } catch {
+        body.innerHTML = `<p class="pf-empty">Live stats are offline right now. Try again later.</p>`;
+      }
+    }
+
+    function queueBox(label, q) {
+      if (!q) return `<div class="pf-queue"><small>${label}</small><strong>Unranked</strong></div>`;
+      return `<div class="pf-queue" style="--qc:${tierColor(q.tier)}"><small>${label}</small>
+        <strong>${esc(q.rank)}</strong> <span class="sub">${q.lp} LP</span>
+        <div class="sub">${q.wins}W ${q.losses}L · ${winrate(q)}% win rate</div></div>`;
+    }
+
+    function drawProfile() {
+      const d = current, [name, tag] = d.riotId.split("#");
+      const kda = c => c.deaths ? ((c.kills + c.assists) / c.deaths).toFixed(1) : "Perfect";
+      const roleTotal = Object.values(d.roles).reduce((a, b) => a + b, 0);
+      body.innerHTML = `
+        <div class="pf-head" style="--glow:${tierColor(d.solo?.tier)}">
+          <div class="pf-icon">${iconImg(d.icon) ? `<img src="${iconImg(d.icon)}" alt="">` : ""}<span>Level ${d.level ?? "?"}</span></div>
+          <div><h2>${esc(name)}</h2><div class="tagline">#${esc(tag)} · ${esc(d.region.toUpperCase())}</div></div>
+        </div>
+        <div class="pf-queues">${queueBox("Ranked Solo/Duo", d.solo)}${queueBox("Ranked Flex", d.flex)}</div>
+
+        <div class="pf-section">
+          <h3>LP history <span class="pf-tabs"><button data-q="solo">Solo/Duo</button><button data-q="flex">Flex</button></span></h3>
+          <div class="pf-graph" id="pf-graph"></div>
+        </div>
+
+        ${d.champions.length ? `<div class="pf-section"><h3>Champions (last ${d.matchCount} games)</h3><div class="pf-champs">
+          ${d.champions.map(c => `<div class="pf-champ">${champPic(c)}<div><div class="n">${esc(c.name)}</div>
+            <div class="s">${c.games} game${c.games === 1 ? "" : "s"} · ${Math.round(100 * c.wins / c.games)}% · ${kda(c)} KDA</div></div></div>`).join("")}
+        </div></div>` : ""}
+
+        ${roleTotal ? `<div class="pf-section"><h3>Roles</h3><div class="pf-roles">
+          ${Object.entries(d.roles).filter(([r]) => ROLE_NAMES[r]).sort((a, b) => b[1] - a[1]).map(([r, n]) => `<div class="pf-role"><span>${ROLE_NAMES[r] || esc(r)}</span>
+            <span class="bar"><i style="width:${Math.round(100 * n / roleTotal)}%"></i></span><span>${Math.round(100 * n / roleTotal)}%</span></div>`).join("")}
+        </div></div>` : ""}
+
+        ${d.mastery.length ? `<div class="pf-section"><h3>Top mastery</h3><div class="pf-mastery">
+          ${d.mastery.map(m => `<div class="m">${champPic(m, m.level)}${short(m.points)}</div>`).join("")}
+        </div></div>` : ""}
+
+        <div class="pf-section"><h3>Recent games</h3>
+          ${d.matches.length ? `<div class="pf-matches">${d.matches.map(m => {
+            const res = m.remake ? "remake" : m.win ? "win" : "loss";
+            const mins = Math.max(m.duration / 60, 1);
+            return `<div class="pf-match ${res}"><span class="res"></span>${champPic(m.champ)}
+              <div><div><span class="kda">${m.kills} / ${m.deaths} / ${m.assists}</span> · ${esc(m.champ.name)}</div>
+              <div class="info">${esc(m.queue)}${ROLE_NAMES[m.position] ? " · " + ROLE_NAMES[m.position] : ""} · ${m.cs} CS (${(m.cs / mins).toFixed(1)}/min) · ${short(m.damage)} dmg</div></div>
+              <div class="when"><b>${m.remake ? "Remake" : m.win ? "Win" : "Loss"}</b><br>${Math.floor(m.duration / 60)}:${String(m.duration % 60).padStart(2, "0")} · ${ago(m.at)}</div></div>`;
+          }).join("")}</div>` : `<p class="pf-empty">No games found yet.</p>`}
+        </div>
+        <p class="pf-foot">Live from Riot · checked ${d.checked ? ago(d.checked) : "just now"}</p>`;
+      body.querySelectorAll(".pf-tabs button").forEach(b => b.addEventListener("click", () => { graphQueue = b.dataset.q; drawGraph(); }));
+      drawGraph();
+    }
+
+    function drawGraph() {
+      body.querySelectorAll(".pf-tabs button").forEach(b => b.classList.toggle("active", b.dataset.q === graphQueue));
+      const box = document.getElementById("pf-graph");
+      const pts = current.history[graphQueue].map(h => ({ ...h, v: value(h) }));
+      if (!pts.length) {
+        box.innerHTML = `<p class="pf-empty">No ${graphQueue === "solo" ? "Solo/Duo" : "Flex"} games recorded yet. The graph fills in as they play ranked.</p>`;
+        return;
+      }
+      const now = Date.now() / 1000;
+      pts.push({ ...pts[pts.length - 1], at: now, now: true });          // carry the line on to today
+      const W = Math.round(Math.max(box.clientWidth - 18, 280)), H = W < 500 ? 200 : 240, L = 62, R = 14, T = 14, B = 28;
+      const t0 = pts[0].at, t1 = Math.max(now, t0 + 3600);
+      let lo = Math.min(...pts.map(p => p.v)), hi = Math.max(...pts.map(p => p.v));
+      lo = Math.floor((lo - 40) / 100) * 100; hi = Math.ceil((hi + 40) / 100) * 100;
+      if (hi - lo < 200) hi = lo + 200;
+      const x = t => L + (W - L - R) * (t - t0) / (t1 - t0);
+      const y = v => T + (H - T - B) * (1 - (v - lo) / (hi - lo));
+      const step = (hi - lo) / 100 > 8 ? 400 : 100;
+      let grid = "";
+      for (let v = Math.ceil(lo / step) * step; v <= hi; v += step) {
+        const col = tierColor(TIERS[Math.min(Math.floor(v / 400), 7)]);
+        grid += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="#2e2f3e" stroke-dasharray="${v % 400 ? "3 4" : ""}"/>
+          <text x="${L - 8}" y="${y(v) + 4}" text-anchor="end" fill="${col}" font-size="12">${nameAt(v)}</text>`;
+      }
+      const fmt = s => new Date(s * 1000).toLocaleDateString(undefined, { day: "numeric", month: "short" });
+      const path = pts.map((p, i) => `${i ? "L" : "M"}${x(p.at).toFixed(1)},${y(p.v).toFixed(1)}`).join(" ");
+      const real = pts.filter(p => !p.now);
+      box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="LP over time">
+        ${grid}
+        ${t1 - t0 > 2 * 86400 ? `<text x="${L}" y="${H - 6}" fill="#6b7280" font-size="12">${fmt(t0)}</text>` : ""}
+        <text x="${W - R}" y="${H - 6}" fill="#6b7280" font-size="12" text-anchor="end">Today</text>
+        <path d="${path}" fill="none" stroke="#a78bfa" stroke-width="2.5" stroke-linejoin="round"/>
+        ${real.map((p, i) => `<circle cx="${x(p.at)}" cy="${y(p.v)}" r="${real.length > 60 ? 2.5 : 4}" fill="${tierColor(p.tier)}" data-i="${i}"/>`).join("")}
+      </svg><div class="tip" hidden></div>
+      ${real.length < 3 ? `<p class="pf-empty">LP is recorded from the day live stats started, so this graph grows as ${esc(current.riotId.split("#")[0])} plays.</p>` : ""}`;
+      const tip = box.querySelector(".tip"), svg = box.querySelector("svg");
+      svg.addEventListener("pointermove", e => {
+        const rect = svg.getBoundingClientRect(), mx = (e.clientX - rect.left) * W / rect.width;
+        const p = real.reduce((a, b) => Math.abs(x(b.at) - mx) < Math.abs(x(a.at) - mx) ? b : a);
+        tip.hidden = false;
+        tip.textContent = `${p.rank} ${p.lp} LP · ${new Date(p.at * 1000).toLocaleString(undefined, { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" })}`;
+        tip.style.left = (x(p.at) * rect.width / W + 8) + "px";
+        tip.style.top = (y(p.v) * rect.height / H + 8) + "px";
+      });
+      svg.addEventListener("pointerleave", () => { tip.hidden = true; });
+    }
+
+    loadCards().then(() => {
+      const m = location.hash.match(/^#player\/(.+)$/);
+      if (m) openProfile(decodeURIComponent(m[1]));
+    });
+    setInterval(loadCards, 5 * 60 * 1000);
   })();
 </script>
 
