@@ -2076,11 +2076,11 @@
       const v = c.dataset.v != null ? valGames[+c.dataset.v] : null;
       c.textContent = v ? clock(v.since ? Date.now() / 1000 - v.since : null) : clock(gameSeconds(liveGames[+c.dataset.k]));
     }), 1000);
-    // Every 4 seconds while a game with a full scoreboard is on (items, KDA and CS change all the time),
+    // Every 2 seconds while a game with a full scoreboard is on (items, KDA and CS change all the time),
     // otherwise every 15.
     (async function liveLoop() {
       await loadLive();
-      setTimeout(liveLoop, liveGames.some(g => g.time != null) ? 4000 : 15000);
+      setTimeout(liveLoop, liveGames.some(g => g.time != null) ? 2000 : 15000);
     })();
   })();
 </script>
