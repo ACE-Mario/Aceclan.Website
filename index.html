@@ -844,6 +844,51 @@
   .live-note .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #3fbf7f;
     margin-right: 6px; box-shadow: 0 0 8px #3fbf7f; }
 
+  /* Live game panel (RIOT API /live) */
+  .hero-live {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; padding: 5px 14px; border-radius: 999px;
+    border: 1px solid rgba(255, 70, 85, 0.5); background: rgba(255, 70, 85, 0.12); color: #ffd1d5;
+    font-size: 0.85rem; font-weight: 600; letter-spacing: 1px; text-decoration: none; position: relative;
+  }
+  .hero-live[hidden] { display: none; }
+  .hero-live:hover { background: rgba(255, 70, 85, 0.22); }
+  .rec { width: 8px; height: 8px; border-radius: 50%; background: #ff4655; box-shadow: 0 0 8px #ff4655; animation: rec 1.4s infinite; flex: none; }
+  @keyframes rec { 50% { opacity: 0.35; } }
+  section#live-game { max-width: 1000px; margin: 0 auto; padding: 70px 16px 0; scroll-margin-top: 10px; }
+  section#live-game h2 { color: #e8e8e8; margin-bottom: 22px; font-size: 2.2rem; letter-spacing: 6px; text-align: center; }
+  .lg { background: #12141c; border: 1px solid #2e2f3e; border-radius: 12px; padding: 14px; margin-bottom: 18px; }
+  .lg-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-bottom: 12px; }
+  .lg-head .rec { margin-right: -6px; }
+  .lg-head b { font-family: 'Rajdhani', 'Segoe UI', Arial, sans-serif; font-size: 1.25rem; letter-spacing: 1px; }
+  .lg-head .clock { font-variant-numeric: tabular-nums; color: #ff8a94; font-weight: 600; }
+  .lg-head .who { color: #a78bfa; margin-left: auto; font-size: 0.9rem; }
+  .lg-teams { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .lg-team { border: 1px solid #2e2f3e; border-top: 3px solid var(--tc); border-radius: 8px; overflow: hidden; }
+  .lg-team.blue { --tc: #4f8cff; } .lg-team.red { --tc: #ff4655; }
+  .lg-team-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 10px; padding: 6px 10px; background: #151823;
+    font-size: 0.8rem; color: #9ca3af; }
+  .lg-team-head b { color: var(--tc); letter-spacing: 1px; text-transform: uppercase; }
+  .lg-team-head .obj span { margin-left: 8px; white-space: nowrap; }
+  .lg-row { display: grid; grid-template-columns: 38px 17px minmax(0, 1fr) auto; align-items: center; gap: 4px 6px; padding: 5px 10px;
+    border-top: 1px solid #22252f; font-size: 0.85rem; }
+  .lg-row.ace { background: rgba(124, 58, 237, 0.14); }
+  .lg-row.dead .champ-pic img { filter: grayscale(1) brightness(0.6); }
+  .lg-row .champ-pic { width: 38px; height: 38px; }
+  .lg-spells { display: grid; gap: 2px; }
+  .lg-spells img, .lg-spells i { width: 17px; height: 17px; border-radius: 3px; display: block; background: #0d0f14; }
+  .lg-name { min-width: 0; display: flex; flex-direction: column; line-height: 1.25; }
+  .lg-name > * { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lg-name small { color: #6b7280; font-size: 0.75rem; }
+  .lg-name button { background: none; border: 0; padding: 0; font: inherit; color: #c4b5fd; font-weight: 600; cursor: pointer; text-align: left; }
+  .lg-name button:hover { text-decoration: underline; }
+  .lg-stats { text-align: right; line-height: 1.25; white-space: nowrap; }
+  .lg-stats small { color: #6b7280; font-size: 0.75rem; display: block; }
+  .lg-items { grid-column: 3 / -1; display: flex; gap: 2px; }
+  .lg-items img, .lg-items i { width: 20px; height: 20px; border-radius: 3px; display: block; background: #0d0f14; border: 1px solid #22252f; }
+  .lg-foot { margin-top: 10px; color: #6b7280; font-size: 0.78rem; text-align: center; }
+  @media (max-width: 760px) { .lg-teams { grid-template-columns: 1fr; } .lg-head .who { margin-left: 0; width: 100%; } }
+  @media (max-width: 520px) { section#live-game h2 { font-size: 1.6rem; letter-spacing: 4px; } }
+
   .pf-modal { max-width: 860px; padding: 24px 22px; text-align: left; color: #e8e8e8; }
   .pf-head { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; padding-right: 30px; }
   .pf-icon { position: relative; width: 78px; height: 78px; flex: none; }
@@ -978,6 +1023,7 @@
     </nav>
   </div>
   <div class="hero-kicker"><span class="dot"></span>Oceania · Recruiting</div>
+  <a class="hero-live" id="hero-live" href="#live-game" hidden></a>
   <h1>ACE CLAN</h1>
   <p class="sub"><span class="val">Valorant</span> · <span class="lol">League of Legends</span></p>
   <div class="hero-actions">
@@ -992,6 +1038,11 @@
   </div>
   <a class="scroll-hint" href="#players" aria-label="Scroll to players"></a>
 </header>
+
+<section id="live-game" hidden>
+  <h2 class="section-title">LIVE GAME</h2>
+  <div id="live-games"></div>
+</section>
 
 <section id="players">
   <h2 class="section-title">PLAYERS</h2>
@@ -1878,6 +1929,76 @@
       else if (who) openSomeone(decodeURIComponent(who[1]), +who[2]);
     });
     setInterval(loadCards, 60 * 1000);
+
+    // Live game: games clan members are in right now (Riot checks every 2 minutes). When the game is
+    // being played on the clan PC, the game itself gives the full scoreboard: KDA, CS, items, dragons.
+    const liveSection = document.getElementById("live-game"), liveBox = document.getElementById("live-games");
+    const heroLive = document.getElementById("hero-live");
+    const spellImg = id => id && dd ? `https://ddragon.leagueoflegends.com/cdn/${dd}/img/spell/${id}.png` : "";
+    const itemImg = id => id && dd ? `https://ddragon.leagueoflegends.com/cdn/${dd}/img/item/${id}.png` : "";
+    const clock = s => s == null || s < 0 ? "" : `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+    let liveGames = [], liveAt = 0;
+    const gameSeconds = g => g.time != null ? g.time + (Date.now() / 1000 - liveAt)
+      : g.start ? Date.now() / 1000 - g.start : null;
+
+    function livePlayer(p) {
+      const score = p.k != null;
+      const name = p.clan
+        ? `<button type="button" data-rid="${esc(p.clan)}" title="Open profile">${esc(p.name)}</button>`
+        : `<span>${esc(p.name)}</span>`;
+      const items = score ? `<div class="lg-items">${Array.from({ length: 7 }, (_, k) => p.items[k]
+        ? `<img src="${itemImg(p.items[k])}" alt="" loading="lazy">` : "<i></i>").join("")}</div>` : "";
+      return `<div class="lg-row${p.clan ? " ace" : ""}${p.dead ? " dead" : ""}">
+        ${champPic(p.champ, score ? p.level : null, p.dead ? `${p.champ.name} (respawning in ${p.respawn}s)` : p.champ.name)}
+        <span class="lg-spells">${p.spells.map(s => s ? `<img src="${spellImg(s)}" alt="" loading="lazy">` : "<i></i>").join("")}</span>
+        <span class="lg-name">${name}<small>${esc(p.champ.name)}</small></span>
+        ${score ? `<span class="lg-stats"><b>${p.k}/${p.d}/${p.a}</b><small>${p.cs} CS</small></span>` : "<span></span>"}
+        ${items}
+      </div>`;
+    }
+
+    function liveTeam(g, t) {
+      const ps = g.players.filter(p => p.team === t);
+      const o = g.objectives?.[t];
+      const kills = ps.reduce((n, p) => n + (p.k || 0), 0);
+      return `<div class="lg-team ${t === 1 ? "blue" : "red"}">
+        <div class="lg-team-head"><b>${t === 1 ? "Blue" : "Red"} side</b>${o ? `<span class="obj"><span title="Kills">⚔ ${kills}</span><span title="Towers">🏰 ${o.towers}</span><span title="Dragons">🐉 ${o.dragons}</span><span title="Barons">👑 ${o.barons}</span></span>` : ""}</div>
+        ${ps.map(livePlayer).join("")}
+      </div>`;
+    }
+
+    function drawLive() {
+      liveSection.hidden = heroLive.hidden = !liveGames.length;
+      if (!liveGames.length) { liveBox.innerHTML = ""; return; }
+      const names = liveGames.flatMap(g => g.players.filter(p => p.clan).map(p => p.name));
+      heroLive.innerHTML = `<span class="rec"></span>${esc(names.length > 2 ? `${names.length} of us` : names.join(" & "))} in a live game · watch`;
+      liveBox.innerHTML = liveGames.map((g, k) => {
+        const ours = g.players.filter(p => p.clan);
+        return `<article class="lg">
+          <div class="lg-head"><span class="rec"></span><b>LIVE</b><span>${esc(g.queue || "League")}</span>
+            <span class="clock" data-k="${k}">${clock(gameSeconds(g))}</span>
+            <span class="who">${ours.map(p => `${esc(p.name)} on ${esc(p.champ.name)}`).join(" · ")}</span></div>
+          <div class="lg-teams">${liveTeam(g, 1)}${liveTeam(g, 2)}</div>
+          ${g.time == null ? `<p class="lg-foot">The full scoreboard shows when the game is played on the clan PC.</p>` : ""}
+        </article>`;
+      }).join("");
+    }
+
+    async function loadLive() {
+      try {
+        const r = await fetch(RIOT + "/live");
+        if (!r.ok) return;
+        const d = await r.json();
+        dd = d.ddragon || dd;
+        liveGames = d.games || [];
+        liveAt = Date.now() / 1000;
+        drawLive();
+      } catch { /* RIOT API offline: leave the panel as it was */ }
+    }
+    liveBox.addEventListener("click", e => { const b = e.target.closest("[data-rid]"); if (b) openProfile(b.dataset.rid); });
+    setInterval(() => liveBox.querySelectorAll(".clock").forEach(c => { c.textContent = clock(gameSeconds(liveGames[+c.dataset.k])); }), 1000);
+    loadLive();
+    setInterval(loadLive, 15 * 1000);
   })();
 </script>
 
