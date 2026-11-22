@@ -30,6 +30,7 @@
   .app { background: #12141c; border: 1px solid #2e2f3e; border-radius: 14px; padding: 24px; display: grid;
     grid-template-columns: 96px 1fr; gap: 20px; align-items: start; }
   .app > img { width: 96px; height: 96px; border-radius: 18px; }
+  .app + .app { margin-top: 20px; }
   .app h2 { font-family: 'Rajdhani', 'Segoe UI', Arial, sans-serif; font-size: 1.8rem; letter-spacing: 1px; line-height: 1.1; }
   .app .meta { color: #6b7280; font-size: 0.85rem; margin: 2px 0 12px; }
   .app p { color: #c9cbd3; margin-bottom: 10px; }
@@ -42,6 +43,7 @@
   .get small { font-weight: 400; opacity: 0.8; letter-spacing: 0; }
   .note { background: #151823; border: 1px solid #2e2f3e; border-radius: 10px; padding: 12px 14px; font-size: 0.9rem; color: #9ca3af; }
   .note b { color: #e8e8e8; }
+  code { background: #1d2030; border: 1px solid #2e2f3e; border-radius: 5px; padding: 0 6px; font-size: 0.85em; }
   .note + .note { margin-top: 10px; }
   @media (max-width: 560px) {
     .app { grid-template-columns: 1fr; text-align: left; }
@@ -58,7 +60,7 @@
 
 <main>
   <h1>DOWNLOADS</h1>
-  <p class="lead">Programs made for the clan. Windows only.</p>
+  <p class="lead">Programs and mods made for the clan.</p>
 
   <article class="app">
     <img src="ace.png" alt="ACE icon">
@@ -79,6 +81,26 @@
         can't show on top. It only reads the game's own live data, the same way Riot allows other companion apps to.</div>
     </div>
   </article>
+
+  <article class="app">
+    <img src="hypixel-mod.png" alt="ACE Hypixel mod icon">
+    <div>
+      <h2>Ace Clan Hypixel Mod</h2>
+      <div class="meta" id="mod-meta">Minecraft 26.2 · Fabric · client-side only</div>
+      <p>SkyBlock drop trackers synced to Jerry on Discord, plus a storage viewer for your sacks, ender chest,
+        backpacks and island chests.</p>
+      <ul>
+        <li>Live trackers for dungeons, slayer, mining, fishing, Diana, Kuudra and more, with counts on your HUD.</li>
+        <li>Press <kbd>B</kbd> for one searchable grid of everything you own, and click an item to take it out.</li>
+        <li>Craft plans, shard fusions, Trophy Fish, garden visitors and case-opening loot reveals.</li>
+        <li>Tells you in game when there's a new version.</li>
+      </ul>
+      <a class="get" id="mod-get" href="https://hypixel.aceclan.lol/mod/" download>⬇ Download the mod <small id="mod-size"></small></a>
+      <div class="note"><b>Needs Fabric and Fabric API</b> for Minecraft 26.2. Put the jar in your <code>mods</code> folder,
+        then type <code>!jerry link</code> in the clan Discord to link it.
+        <a href="https://hypixel.aceclan.lol/mod/">Full setup guide, every feature and the changelog</a>.</div>
+    </div>
+  </article>
 </main>
 
 <script>
@@ -88,6 +110,20 @@
       `Version ${d.version} · ${new Date(d.date + "T00:00").toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })} · Windows 10 or 11`;
     document.getElementById("overlay-size").textContent = `${(d.size / 1e6).toFixed(0)} MB`;
   }).catch(() => {});
+
+  // The mod lives on hypixel.aceclan.lol, where its own update check reads latest.json: use the same file,
+  // so this always offers the newest jar without a second copy to keep in step.
+  const MOD = "https://hypixel.aceclan.lol/mod/";
+  fetch(MOD + "latest.json", { cache: "no-store" }).then(r => r.json()).then(d => {
+    const get = document.getElementById("mod-get");
+    get.href = MOD + encodeURIComponent(d.file);
+    get.setAttribute("download", d.file);
+    document.getElementById("mod-meta").textContent = `Version ${d.version} · Minecraft 26.2 · Fabric · client-side only`;
+    return fetch(get.href, { method: "HEAD" });
+  }).then(r => {
+    const n = +r.headers.get("content-length");
+    if (n) document.getElementById("mod-size").textContent = `${Math.round(n / 1024)} KB`;
+  }).catch(() => {});      // offline: the button still goes to the mod's own page
 </script>
 </body>
 </html>
