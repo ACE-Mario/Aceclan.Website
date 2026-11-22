@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACE Downloads</title>
+<meta name="description" content="Programs from ACE Clan: ACE Overlay, a League of Legends scoreboard with player profiles.">
+<link rel="icon" href="ace.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: radial-gradient(ellipse at 50% -20%, rgba(124, 58, 237, 0.22), transparent 60%), #0d0f14;
+    background-attachment: fixed; color: #e8e8e8; font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6;
+    min-height: 100vh;
+  }
+  a { color: #a78bfa; }
+  .nav { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; max-width: 1000px; margin: 0 auto; }
+  .nav .logo { font-family: 'Rajdhani', 'Segoe UI', Arial, sans-serif; font-weight: 700; font-size: 1.4rem; letter-spacing: 3px;
+    color: #e8e8e8; text-decoration: none; }
+  .nav .logo span { color: #a78bfa; }
+  .nav a.back { color: #9ca3af; text-decoration: none; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; font-size: 0.9rem; }
+  .nav a.back:hover { color: #e8e8e8; }
+  main { max-width: 860px; margin: 0 auto; padding: 30px 16px 80px; }
+  h1 { font-family: 'Rajdhani', 'Segoe UI', Arial, sans-serif; font-size: 2.6rem; letter-spacing: 6px; text-align: center; }
+  .lead { text-align: center; color: #9ca3af; margin-bottom: 36px; }
+  .app { background: #12141c; border: 1px solid #2e2f3e; border-radius: 14px; padding: 24px; display: grid;
+    grid-template-columns: 96px 1fr; gap: 20px; align-items: start; }
+  .app > img { width: 96px; height: 96px; border-radius: 18px; }
+  .app h2 { font-family: 'Rajdhani', 'Segoe UI', Arial, sans-serif; font-size: 1.8rem; letter-spacing: 1px; line-height: 1.1; }
+  .app .meta { color: #6b7280; font-size: 0.85rem; margin: 2px 0 12px; }
+  .app p { color: #c9cbd3; margin-bottom: 10px; }
+  .app ul { margin: 0 0 14px 20px; color: #c9cbd3; }
+  .app li { margin: 3px 0; }
+  kbd { background: #1d2030; border: 1px solid #2e2f3e; border-bottom-width: 2px; border-radius: 5px; padding: 0 6px; font-size: 0.85em; font-family: inherit; }
+  .get { display: inline-flex; align-items: center; gap: 10px; background: #7c3aed; color: #fff; text-decoration: none; font-weight: 700;
+    letter-spacing: 1px; padding: 12px 22px; border-radius: 10px; margin: 6px 0 14px; }
+  .get:hover { background: #8b5cf6; }
+  .get small { font-weight: 400; opacity: 0.8; letter-spacing: 0; }
+  .note { background: #151823; border: 1px solid #2e2f3e; border-radius: 10px; padding: 12px 14px; font-size: 0.9rem; color: #9ca3af; }
+  .note b { color: #e8e8e8; }
+  .note + .note { margin-top: 10px; }
+  @media (max-width: 560px) {
+    .app { grid-template-columns: 1fr; text-align: left; }
+    .app > img { width: 72px; height: 72px; }
+    h1 { font-size: 2rem; letter-spacing: 4px; }
+  }
+</style>
+</head>
+<body>
+<div class="nav">
+  <a class="logo" href="/">ACE<span>.</span></a>
+  <a class="back" href="/">Clan</a>
+</div>
+
+<main>
+  <h1>DOWNLOADS</h1>
+  <p class="lead">Programs made for the clan. Windows only.</p>
+
+  <article class="app">
+    <img src="ace.png" alt="ACE icon">
+    <div>
+      <h2>ACE Overlay</h2>
+      <div class="meta" id="overlay-meta">League of Legends · Windows 10 or 11</div>
+      <p>A live League scoreboard that sits on top of your game, with a profile for anyone in it.</p>
+      <ul>
+        <li>Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> in game (or click the purple ACE icon in your tray).</li>
+        <li>Both teams: champions, levels, K/D/A, CS, items, who's dead, towers and dragons.</li>
+        <li>Click a clan member's name for their rank, best champions and recent games.</li>
+        <li>It keeps itself up to date: when there's a new version, an <b>Update</b> button appears.</li>
+      </ul>
+      <a class="get" id="overlay-get" href="ACE-Overlay.exe" download>⬇ Download ACE Overlay <small id="overlay-size"></small></a>
+      <div class="note"><b>Windows may warn you</b> ("Windows protected your PC") because the program isn't from a big
+        publisher. Click <b>More info</b> then <b>Run anyway</b>. Nothing to install: it runs straight away.</div>
+      <div class="note">Set League to <b>Borderless</b> or <b>Windowed</b> (Settings → Video → Window Mode), or the overlay
+        can't show on top. It only reads the game's own live data, the same way Riot allows other companion apps to.</div>
+    </div>
+  </article>
+</main>
+
+<script>
+  // Version, size and date from overlay.json (written each time a new version is published).
+  fetch("overlay.json", { cache: "no-store" }).then(r => r.json()).then(d => {
+    document.getElementById("overlay-meta").textContent =
+      `Version ${d.version} · ${new Date(d.date + "T00:00").toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })} · Windows 10 or 11`;
+    document.getElementById("overlay-size").textContent = `${(d.size / 1e6).toFixed(0)} MB`;
+  }).catch(() => {});
+</script>
+</body>
+</html>
