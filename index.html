@@ -886,6 +886,18 @@
   .lg-items { grid-column: 3 / -1; display: flex; gap: 2px; }
   .lg-items img, .lg-items i { width: 20px; height: 20px; border-radius: 3px; display: block; background: #0d0f14; border: 1px solid #22252f; }
   .lg-foot { margin-top: 10px; color: #6b7280; font-size: 0.78rem; text-align: center; }
+  .lg-val { border-color: rgba(255, 70, 85, 0.35); }
+  .lg-val .lg-head { margin-bottom: 10px; }
+  .val-tag { color: #ff4655; font-weight: 700; letter-spacing: 1px; font-size: 0.85rem; }
+  .val-map { color: #e8e8e8; font-weight: 600; }
+  .val-pre { color: #9ca3af; font-style: italic; }
+  .val-score { margin-left: auto; font-family: 'Rajdhani', 'Segoe UI', Arial, sans-serif; font-size: 1.5rem; color: #9ca3af; }
+  .val-score b:first-child { color: #3fbf7f; } .val-score b:last-child { color: #ff4655; }
+  .val-members { display: flex; flex-wrap: wrap; gap: 8px; }
+  .val-member { display: flex; flex-direction: column; line-height: 1.25; background: rgba(124, 58, 237, 0.14); border: 1px solid #2e2f3e;
+    border-radius: 8px; padding: 6px 12px; }
+  .val-member b { color: #c4b5fd; }
+  .val-member small { font-size: 0.75rem; font-weight: 600; }
   @media (max-width: 760px) { .lg-teams { grid-template-columns: 1fr; } .lg-head .who { margin-left: 0; width: 100%; } }
   @media (max-width: 520px) { section#live-game h2 { font-size: 1.6rem; letter-spacing: 4px; } }
 
@@ -1651,8 +1663,30 @@
     async function loadCards() {
       try {
         const r = await fetch(RIOT + "/players");
-        if (r.ok) updateCards(await r.json());
+        if (!r.ok) return;
+        const d = await r.json();
+        updateCards(d);
+        valRanks(d.valorant || {});
       } catch { /* RIOT API is offline: keep the typed-in ranks */ }
+    }
+
+    // VALORANT ranks, sent by the ACE Overlay from the Riot Client (Riot's API has none for us).
+    const VAL_COLORS = { ...RANK_COLORS, ascendant: "#2ec27e", immortal: "#d64a6c", radiant: "#f4e3a1" };
+    function valRanks(ranks) {
+      for (const { p, card } of cards) {
+        const v = ranks[`${p.name}#${p.tag}`];
+        if (!v || !p.games.includes("valorant")) continue;
+        let line = card.querySelector(".val-rank");
+        if (!line) {
+          line = document.createElement("div");
+          line.className = "rank val-rank";
+          (card.querySelector(".rank:not(.lol-rank)") || card.querySelector(".links")).before(line);
+        }
+        const color = VAL_COLORS[v.rank.split(" ")[0].toLowerCase()] || "#ff4655";
+        line.innerHTML = `Valorant: <strong style="color:${color}">${esc(v.rank)}</strong>`;
+        line.title = `From the ACE Overlay, ${ago(v.at)}`;
+        if (!p.games.includes("league")) card.style.setProperty("--glow", color);   // Valorant-only: glow in their rank colour
+      }
     }
 
     // ---- Profile ----
@@ -1937,7 +1971,7 @@
     const spellImg = id => id && dd ? `https://ddragon.leagueoflegends.com/cdn/${dd}/img/spell/${id}.png` : "";
     const itemImg = id => id && dd ? `https://ddragon.leagueoflegends.com/cdn/${dd}/img/item/${id}.png` : "";
     const clock = s => s == null || s < 0 ? "" : `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
-    let liveGames = [], liveAt = 0;
+    let liveGames = [], valGames = [], liveAt = 0;
     const gameSeconds = g => g.time != null ? g.time + (Date.now() / 1000 - liveAt)
       : g.start ? Date.now() / 1000 - g.start : null;
 
@@ -1967,12 +2001,27 @@
       </div>`;
     }
 
+    // VALORANT: only what the Riot Client shows friends (map, mode, score), so a smaller card per party.
+    function valGame(g, k) {
+      const score = g.score && g.state === "INGAME" ? `<span class="val-score"><b>${g.score[0]}</b> – <b>${g.score[1]}</b></span>` : "";
+      return `<article class="lg lg-val">
+        <div class="lg-head"><span class="rec"></span><b>LIVE</b><span class="val-tag">VALORANT</span><span>${esc(g.queue)}</span>
+          ${g.map ? `<span class="val-map">${esc(g.map)}</span>` : ""}
+          ${g.state === "INGAME" ? `<span class="clock" data-v="${k}">${clock(g.since ? Date.now() / 1000 - g.since : null)}</span>` : `<span class="val-pre">Agent select</span>`}
+          ${score}</div>
+        <div class="val-members">${g.members.map(m => `<span class="val-member"><b>${esc(m.name)}</b>${m.rank
+          ? `<small style="color:${VAL_COLORS[m.rank.split(" ")[0].toLowerCase()] || "#9ca3af"}">${esc(m.rank)}</small>` : ""}</span>`).join("")}</div>
+      </article>`;
+    }
+
     function drawLive() {
-      liveSection.hidden = heroLive.hidden = !liveGames.length;
-      if (!liveGames.length) { liveBox.innerHTML = ""; return; }
-      const names = liveGames.flatMap(g => g.players.filter(p => p.clan).map(p => p.name));
+      const any = liveGames.length || valGames.length;
+      liveSection.hidden = heroLive.hidden = !any;
+      if (!any) { liveBox.innerHTML = ""; return; }
+      const names = [...liveGames.flatMap(g => g.players.filter(p => p.clan).map(p => p.name)),
+                     ...valGames.flatMap(g => g.members.map(m => m.name))];
       heroLive.innerHTML = `<span class="rec"></span>${esc(names.length > 2 ? `${names.length} of us` : names.join(" & "))} in a live game · watch`;
-      liveBox.innerHTML = liveGames.map((g, k) => {
+      liveBox.innerHTML = valGames.map(valGame).join("") + liveGames.map((g, k) => {
         const ours = g.players.filter(p => p.clan);
         return `<article class="lg">
           <div class="lg-head"><span class="rec"></span><b>LIVE</b><span>${esc(g.queue || "League")}</span>
@@ -1991,12 +2040,16 @@
         const d = await r.json();
         dd = d.ddragon || dd;
         liveGames = d.games || [];
+        valGames = d.valorant || [];
         liveAt = Date.now() / 1000;
         drawLive();
       } catch { /* RIOT API offline: leave the panel as it was */ }
     }
     liveBox.addEventListener("click", e => { const b = e.target.closest("[data-rid]"); if (b) openProfile(b.dataset.rid); });
-    setInterval(() => liveBox.querySelectorAll(".clock").forEach(c => { c.textContent = clock(gameSeconds(liveGames[+c.dataset.k])); }), 1000);
+    setInterval(() => liveBox.querySelectorAll(".clock").forEach(c => {
+      const v = c.dataset.v != null ? valGames[+c.dataset.v] : null;
+      c.textContent = v ? clock(v.since ? Date.now() / 1000 - v.since : null) : clock(gameSeconds(liveGames[+c.dataset.k]));
+    }), 1000);
     loadLive();
     setInterval(loadLive, 15 * 1000);
   })();
