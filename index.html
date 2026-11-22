@@ -898,6 +898,16 @@
     border-radius: 8px; padding: 6px 12px; }
   .val-member b { color: #c4b5fd; }
   .val-member small { font-size: 0.75rem; font-weight: 600; }
+  .val-board { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .val-side { background: #151823; border: 1px solid #2e2f3e; border-radius: 8px; padding: 6px 0; min-width: 0; }
+  .val-side.ours { border-top: 2px solid #3fbf7f; } .val-side.theirs { border-top: 2px solid #ff4655; }
+  .val-side h4 { font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; color: #6b7280; padding: 0 10px 4px; }
+  .val-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; padding: 3px 10px; font-size: 0.88rem; align-items: center; }
+  .val-row span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .val-row.ace span:first-child { color: #c4b5fd; font-weight: 700; }
+  .val-row b { font-weight: 700; white-space: nowrap; }
+  .val-board-foot { grid-column: 1 / -1; color: #6b7280; font-size: 0.78rem; }
+  @media (max-width: 560px) { .val-board { grid-template-columns: 1fr; } }
   @media (max-width: 760px) { .lg-teams { grid-template-columns: 1fr; } .lg-head .who { margin-left: 0; width: 100%; } }
   @media (max-width: 520px) { section#live-game h2 { font-size: 1.6rem; letter-spacing: 4px; } }
 
@@ -2011,7 +2021,23 @@
           ${score}</div>
         <div class="val-members">${g.members.map(m => `<span class="val-member"><b>${esc(m.name)}</b>${m.rank
           ? `<small style="color:${VAL_COLORS[m.rank.split(" ")[0].toLowerCase()] || "#9ca3af"}">${esc(m.rank)}</small>` : ""}</span>`).join("")}</div>
+        ${g.board ? valBoard(g) : ""}
       </article>`;
+    }
+
+    // Read off a clan member's screen while they held Tab, so it's as of then, not live to the second.
+    function valBoard(g) {
+      const ace = new Set(g.members.flatMap(m => [m.name.toLowerCase(), (m.valName || "").toLowerCase()]));
+      const rows = g.board.rows, ourTeam = rows.some(r => r.team === 1 && ace.has(r.name.toLowerCase())) ? 1 : 2;
+      const side = t => {
+        const rs = rows.filter(r => r.team === t).sort((a, b) => b.k - a.k || a.d - b.d);
+        return `<div class="val-side ${t === ourTeam ? "ours" : "theirs"}"><h4>${t === ourTeam ? "Our team" : "Enemy team"}</h4>
+          ${rs.map(r => `<div class="val-row${ace.has(r.name.toLowerCase()) ? " ace" : ""}"><span>${esc(r.name)}</span>
+            <b>${r.k} / ${r.d} / ${r.a}</b></div>`).join("")}</div>`;
+      };
+      const ago = Math.max(0, Math.round((Date.now() / 1000 - g.board.at) / 60));
+      return `<div class="val-board">${side(ourTeam)}${side(3 - ourTeam)}
+        <p class="val-board-foot">K/D/A from the scoreboard ${ago ? `${ago} min ago` : "just now"}, read off a clan member's screen while they held Tab.</p></div>`;
     }
 
     function drawLive() {
