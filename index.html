@@ -965,6 +965,9 @@
   .pf-time .pick button.on { background: #7c3aed; border-color: #7c3aed; color: #fff; }
   .pf-time .pick input { width: 70px; background: #0d0f14; border: 1px solid #2e2f3e; border-radius: 6px; color: #e8e8e8;
     font: inherit; font-size: 0.85rem; padding: 3px 8px; }
+  .pf-time .pick input[type=date] { width: auto; color-scheme: dark; }
+  .pf-time .pick input.on { border-color: #7c3aed; }
+  .pf-time .pick .or { margin-left: 8px; }
   .pf-time .out { margin-top: 10px; font-size: 0.95rem; }
   .pf-time .out b { font-size: 1.4rem; color: #c4b5fd; }
   .pf-time .out small { display: block; color: #6b7280; font-size: 0.8rem; margin-top: 2px; }
@@ -1990,9 +1993,14 @@
       if (box.hidden) { timeAsk++; return; }
       const sizes = [20, 50, 100, 250, 500, 1000];
       box.innerHTML = `<div class="pick">Last ${sizes.map(n => `<button type="button" data-n="${n}">${n}</button>`).join("")}
-        <input type="number" min="1" max="1000" placeholder="Any" aria-label="Number of games"> games</div><div class="out"></div>`;
+        <input type="number" min="1" max="1000" placeholder="Any" aria-label="Number of games"> games
+        <span class="or">or every game since</span> <input type="date" aria-label="Count every game from this day on"></div><div class="out"></div>`;
       box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => countTime(+b.dataset.n)));
-      const inp = box.querySelector("input");
+      // Since a day: from midnight (their own time) at the start of the day they pick, up to now.
+      const day = box.querySelector("input[type=date]"), iso = t => new Date(t - new Date(t).getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+      day.max = iso(Date.now());
+      day.addEventListener("change", () => { if (day.value) countTime({ since: new Date(day.value + "T00:00").getTime() / 1000 }); });
+      const inp = box.querySelector("input[type=number]");
       inp.addEventListener("keydown", e => { if (e.key === "Enter" && +inp.value > 0) countTime(Math.min(1000, Math.round(+inp.value))); });
       inp.addEventListener("change", () => { if (+inp.value > 0) countTime(Math.min(1000, Math.round(+inp.value))); });
       countTime(timeGames);
@@ -2000,21 +2008,26 @@
 
     async function countTime(n) {
       const d = current, box = body.querySelector("#pf-time"), ask = ++timeAsk;
-      timeGames = n;
-      box.querySelectorAll("button").forEach(b => b.classList.toggle("on", +b.dataset.n === n));
+      const since = typeof n === "object" ? n.since : null;
+      if (!since) timeGames = n;
+      box.querySelectorAll("button").forEach(b => b.classList.toggle("on", !since && +b.dataset.n === n));
+      box.querySelector("input[type=date]").classList.toggle("on", !!since);
+      if (!since) box.querySelector("input[type=date]").value = "";
+      const query = since ? `since=${Math.floor(since)}` : `games=${n}`;
       const out = box.querySelector(".out");
       const hm = s => `${Math.floor(s / 3600)} h ${Math.round(s % 3600 / 60)} min`;
       out.innerHTML = "Counting…";
       while (ask === timeAsk && current === d && !box.hidden) {
         let r;
-        try { r = await (await fetch(`${RIOT}/playtime/${encodeURIComponent(d.riotId)}?games=${n}`)).json(); }
+        try { r = await (await fetch(`${RIOT}/playtime/${encodeURIComponent(d.riotId)}?${query}`)).json(); }
         catch { out.innerHTML = "Live stats are offline right now. Try again later."; return; }
         if (ask !== timeAsk || current !== d) return;
         if (r.error) { out.innerHTML = esc(r.error); return; }
-        const since = r.since ? new Date(r.since * 1000).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" }) : "";
+        const sinceTxt = r.since ? new Date(r.since * 1000).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" }) : "";
         const avg = r.counted ? Math.round(r.seconds / r.counted / 60) : 0;
-        out.innerHTML = `<b>${hm(r.seconds)}</b> in ${r.missing ? `${r.counted} of ` : ""}${r.games} game${r.games === 1 ? "" : "s"}
-          <small>${r.games < r.asked ? `That's every game Riot has for them. ` : ""}${since ? `Since ${since} · ` : ""}${avg} min a game on average${
+        const fromDay = since ? new Date(since * 1000).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" }) : "";
+        out.innerHTML = `<b>${hm(r.seconds)}</b> in ${r.missing ? `${r.counted} of ` : ""}${r.games} game${r.games === 1 ? "" : "s"}${fromDay ? ` since ${fromDay}` : ""}
+          <small>${r.asked && r.games < r.asked ? `That's every game Riot has for them. ` : ""}${!r.asked && r.games >= 3000 ? "Only the newest 3000 games are counted. " : ""}${!fromDay && sinceTxt ? `Since ${sinceTxt} · ` : ""}${avg} min a game on average${
             r.missing ? ` · Still fetching ${r.missing} older game${r.missing === 1 ? "" : "s"} from Riot, about ${Math.max(1, Math.ceil(r.queued / 25))} min to go…` : ""}</small>`;
         if (!r.missing) return;
         await new Promise(res => setTimeout(res, 5000));
