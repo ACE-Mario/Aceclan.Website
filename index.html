@@ -881,6 +881,7 @@
   .lg-name small { color: #6b7280; font-size: 0.75rem; }
   .lg-name button { background: none; border: 0; padding: 0; font: inherit; color: #c4b5fd; font-weight: 600; cursor: pointer; text-align: left; }
   .lg-name button:hover { text-decoration: underline; }
+  .lg-name button[data-game] { color: inherit; font-weight: inherit; }   /* not clan: looks like the rest, still clickable */
   .lg-stats { text-align: right; line-height: 1.25; white-space: nowrap; }
   .lg-stats small { color: #6b7280; font-size: 0.75rem; display: block; }
   .lg-items { grid-column: 3 / -1; display: flex; gap: 2px; }
@@ -1750,6 +1751,25 @@
       }
     }
 
+    // Someone in a clan member's live game (not in the clan): asks Riot only now, when they're clicked.
+    async function openLivePlayer(gameId, name) {
+      overlay.hidden = false;
+      overlay.scrollTop = 0;
+      body.innerHTML = `<p class="pf-empty">Asking Riot about ${esc(name)}…</p>`;
+      try {
+        const r = await fetch(`${RIOT}/live/${encodeURIComponent(gameId)}/${encodeURIComponent(name)}`);
+        if (!r.ok) throw new Error();
+        const d = await r.json();
+        if (d.ace) return openProfile(d.ace);
+        if (d.error) { body.innerHTML = `<p class="pf-empty">${esc(d.error)}</p>`; return; }
+        current = d;
+        dd = d.ddragon || dd;
+        drawProfile();
+      } catch {
+        body.innerHTML = `<p class="pf-empty">Live stats are offline right now. Try again later.</p>`;
+      }
+    }
+
     async function refreshProfile(btn) {
       const rid = current.riotId, before = current.checked || 0;
       const reload = async () => {
@@ -1985,11 +2005,14 @@
     const gameSeconds = g => g.time != null ? g.time + (Date.now() / 1000 - liveAt)
       : g.start ? Date.now() / 1000 - g.start : null;
 
-    function livePlayer(p) {
+    function livePlayer(p, g) {
       const score = p.k != null;
+      // Anyone else in a game Riot knows about can be looked up too, but only when clicked (it asks Riot).
       const name = p.clan
         ? `<button type="button" data-rid="${esc(p.clan)}" title="Open profile">${esc(p.name)}</button>`
-        : `<span>${esc(p.name)}</span>`;
+        : typeof g.id === "number" && p.name !== "Bot"
+          ? `<button type="button" data-game="${g.id}" data-name="${esc(p.name)}" title="Open profile">${esc(p.name)}</button>`
+          : `<span>${esc(p.name)}</span>`;
       const items = score ? `<div class="lg-items">${Array.from({ length: 7 }, (_, k) => p.items[k]
         ? `<img src="${itemImg(p.items[k])}" alt="" loading="lazy">` : "<i></i>").join("")}</div>` : "";
       return `<div class="lg-row${p.clan ? " ace" : ""}${p.dead ? " dead" : ""}">
@@ -2007,7 +2030,7 @@
       const kills = ps.reduce((n, p) => n + (p.k || 0), 0);
       return `<div class="lg-team ${t === 1 ? "blue" : "red"}">
         <div class="lg-team-head"><b>${t === 1 ? "Blue" : "Red"} side</b>${o ? `<span class="obj"><span title="Kills">⚔ ${kills}</span><span title="Towers">🏰 ${o.towers}</span><span title="Dragons">🐉 ${o.dragons}</span><span title="Barons">👑 ${o.barons}</span></span>` : ""}</div>
-        ${ps.map(livePlayer).join("")}
+        ${ps.map(p => livePlayer(p, g)).join("")}
       </div>`;
     }
 
@@ -2071,7 +2094,10 @@
         drawLive();
       } catch { /* RIOT API offline: leave the panel as it was */ }
     }
-    liveBox.addEventListener("click", e => { const b = e.target.closest("[data-rid]"); if (b) openProfile(b.dataset.rid); });
+    liveBox.addEventListener("click", e => {
+      const b = e.target.closest("[data-rid], [data-game]");
+      if (b) b.dataset.rid ? openProfile(b.dataset.rid) : openLivePlayer(b.dataset.game, b.dataset.name);
+    });
     setInterval(() => liveBox.querySelectorAll(".clock").forEach(c => {
       const v = c.dataset.v != null ? valGames[+c.dataset.v] : null;
       c.textContent = v ? clock(v.since ? Date.now() / 1000 - v.since : null) : clock(gameSeconds(liveGames[+c.dataset.k]));
