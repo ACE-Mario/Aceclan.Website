@@ -854,36 +854,6 @@
   .hero-live:hover { background: rgba(255, 70, 85, 0.22); }
   .rec { width: 8px; height: 8px; border-radius: 50%; background: #ff4655; box-shadow: 0 0 8px #ff4655; animation: rec 1.4s infinite; flex: none; }
   @keyframes rec { 50% { opacity: 0.35; } }
-  section#combos { max-width: 1000px; margin: 0 auto 80px; padding: 0 16px; text-align: center; scroll-margin-top: 10px; }
-  section#combos h2 { color: #e8e8e8; margin-bottom: 10px; font-size: 2.6rem; letter-spacing: 6px; }
-  .cb-sub { color: #9ca3af; margin-bottom: 18px; }
-  .cb-wrap { overflow-x: auto; margin: 0 auto 34px; max-width: 100%; }
-  .cb-grid { border-collapse: separate; border-spacing: 4px; margin: 0 auto; }
-  .cb-grid th { color: #c4b5fd; font-weight: 600; font-size: 0.85rem; padding: 4px 6px; white-space: nowrap; }
-  .cb-grid thead th { vertical-align: bottom; }
-  .cb-grid tbody th { text-align: right; }
-  .cb-grid td { width: 74px; min-width: 64px; height: 54px; border-radius: 8px; background: #151823; border: 1px solid #2e2f3e;
-    color: #e8e8e8; font-size: 1.05rem; font-weight: 700; line-height: 1.1; }
-  .cb-grid td small { display: block; color: #cbd5e1; font-size: 0.7rem; font-weight: 400; margin-top: 2px; }
-  .cb-grid td.self { background: transparent; border-color: transparent; }
-  .cb-grid td.none { color: #4b5563; font-weight: 400; }
-  .cb-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; max-width: 760px; margin: 0 auto 10px; }
-  .cb-head h3 { color: #e8e8e8; font-size: 1.1rem; letter-spacing: 2px; }
-  .cb-sort button { background: #151823; border: 1px solid #2e2f3e; border-radius: 6px; color: #9ca3af; font: inherit;
-    font-size: 0.8rem; padding: 3px 10px; cursor: pointer; }
-  .cb-sort button.on { border-color: #7c3aed; color: #e8e8e8; }
-  .cb-lineups { display: flex; flex-direction: column; gap: 6px; max-width: 760px; margin: 0 auto; text-align: left; }
-  .cb-line { display: grid; grid-template-columns: 1fr auto 110px; align-items: center; gap: 4px 14px; background: #151823;
-    border: 1px solid #2e2f3e; border-radius: 8px; padding: 8px 12px; }
-  .cb-line .who { font-weight: 600; color: #e8e8e8; }
-  .cb-line .who span { display: inline-block; margin-left: 6px; color: #9ca3af; font-size: 0.75rem; font-weight: 400; }
-  .cb-line .cb-rec { color: #9ca3af; font-size: 0.85rem; white-space: nowrap; }
-  .cb-line .bar { position: relative; height: 22px; border-radius: 5px; background: #3b1720; overflow: hidden; }
-  .cb-line .bar i { position: absolute; inset: 0 auto 0 0; background: #166534; }
-  .cb-line .bar b { position: relative; display: block; text-align: center; font-size: 0.85rem; line-height: 22px; color: #fff; }
-  .cb-more { margin-top: 10px; }
-  #combos .pf-empty { color: #6b7280; text-align: center; }
-  @media (max-width: 560px) { .cb-line { grid-template-columns: 1fr 90px; } .cb-line .cb-rec { grid-row: 2; } }
   section#live-game { max-width: 1000px; margin: 0 auto; padding: 70px 16px 0; scroll-margin-top: 10px; }
   section#live-game h2 { color: #e8e8e8; margin-bottom: 22px; font-size: 2.2rem; letter-spacing: 6px; text-align: center; }
   .lg { background: #12141c; border: 1px solid #2e2f3e; border-radius: 12px; padding: 14px; margin-bottom: 18px; }
@@ -1092,7 +1062,7 @@
     <a class="logo" href="#">ACE<span>.</span></a>
     <nav>
       <a href="#players">Players</a>
-      <a href="#combos" id="nav-combos" hidden>Duos</a>
+      <a href="combos/">Duos</a>
       <a href="#contact">Apply</a>
     </nav>
   </div>
@@ -1425,91 +1395,6 @@
       doneBtn.disabled = false;
     }
   });
-</script>
-
-<section id="combos" hidden>
-  <h2 class="section-title">DUOS &amp; SQUADS</h2>
-  <p class="cb-sub">How often each group of us wins when we queue together, from every League game Riot still has.</p>
-  <div class="filters" id="cb-kinds">
-    <button data-kind="all" class="active">All games</button>
-    <button data-kind="ranked">Ranked</button>
-    <button data-kind="normal">Normal Draft</button>
-    <button data-kind="aram">ARAM</button>
-  </div>
-  <div class="cb-wrap"><table class="cb-grid" id="cb-grid" aria-label="Win rate for each pair of players"></table></div>
-  <div class="cb-head"><h3>EVERY LINEUP</h3>
-    <div class="cb-sort" id="cb-sort"><button type="button" data-sort="games" class="on">Most played</button> <button type="button" data-sort="win">Best win rate</button></div>
-  </div>
-  <div class="cb-lineups" id="cb-lineups"></div>
-  <button type="button" class="pf-more cb-more" id="cb-more" hidden>Show all</button>
-</section>
-
-<script>
-  // Duos & squads: win rate for every pair of clan members (the grid) and every exact lineup that queued
-  // together (the list), from RIOT API's saved games. The section stays hidden if RIOT API is offline.
-  (() => {
-    const LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
-    const RIOT = LOCAL ? "http://localhost:5080" : "https://riot.aceclan.lol";
-    const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
-    const nick = rid => rid.split("#")[0].replace(/^ACE /, "");
-    const SIZE = { 2: "duo", 3: "trio", 4: "4-stack", 5: "5-stack" };
-    const MIN_FOR_BEST = 10;                // "Best win rate" leaves out lineups with fewer games than this
-    const SHOWN = 12;
-    let data = null, kind = "all", sort = "games", showAll = false;
-
-    // Green above 50%, red below: stronger the further from 50%, and the more games it's from.
-    function shade(g, w) {
-      const r = w / g, sure = Math.min(1, g / 30), a = Math.min(0.85, Math.abs(r - 0.5) * 3.2 * sure + 0.08);
-      return r >= 0.5 ? `rgba(22, 163, 74, ${a})` : `rgba(220, 38, 38, ${a})`;
-    }
-
-    function draw() {
-      const k = data.kinds[kind], members = data.members, rec = {};
-      for (const [a, b, g, w] of k.pairs) rec[a + "|" + b] = rec[b + "|" + a] = [g, w];
-      document.getElementById("cb-grid").innerHTML =
-        `<thead><tr><th></th>${members.map(m => `<th scope="col">${esc(nick(m))}</th>`).join("")}</tr></thead><tbody>` +
-        members.map(a => `<tr><th scope="row">${esc(nick(a))}</th>${members.map(b => {
-          if (a === b) return `<td class="self"></td>`;
-          const r = rec[a + "|" + b];
-          if (!r) return `<td class="none" title="${esc(nick(a))} and ${esc(nick(b))} haven't played together">–</td>`;
-          const [g, w] = r;
-          return `<td style="background:${shade(g, w)}" title="${esc(nick(a))} + ${esc(nick(b))}: ${w} wins, ${g - w} losses">${Math.round(100 * w / g)}%<small>${g} game${g === 1 ? "" : "s"}</small></td>`;
-        }).join("")}</tr>`).join("") + `</tbody>`;
-
-      let lines = k.lineups.slice();
-      if (sort === "win") lines = lines.filter(l => l[1] >= MIN_FOR_BEST).sort((x, y) => y[2] / y[1] - x[2] / x[1] || y[1] - x[1]);
-      const list = document.getElementById("cb-lineups"), more = document.getElementById("cb-more");
-      more.hidden = showAll || lines.length <= SHOWN;
-      more.textContent = `Show all ${lines.length}`;
-      list.innerHTML = lines.length ? (showAll ? lines : lines.slice(0, SHOWN)).map(([who, g, w]) => {
-        const pct = Math.round(100 * w / g);
-        return `<div class="cb-line"><div class="who">${who.map(m => esc(nick(m))).join(" + ")}<span>${SIZE[who.length] || who.length + " players"}</span></div>
-          <div class="cb-rec">${w}W ${g - w}L</div><div class="bar" title="${pct}% wins in ${g} games"><i style="width:${pct}%"></i><b>${pct}%</b></div></div>`;
-      }).join("") : `<p class="pf-empty">${sort === "win" ? `No lineup has ${MIN_FOR_BEST} or more games of this kind yet.` : "No games together of this kind yet."}</p>`;
-    }
-
-    document.querySelectorAll("#cb-kinds button").forEach(b => b.addEventListener("click", () => {
-      kind = b.dataset.kind;
-      showAll = false;
-      document.querySelectorAll("#cb-kinds button").forEach(x => x.classList.toggle("active", x === b));
-      draw();
-    }));
-    document.querySelectorAll("#cb-sort button").forEach(b => b.addEventListener("click", () => {
-      sort = b.dataset.sort;
-      showAll = false;
-      document.querySelectorAll("#cb-sort button").forEach(x => x.classList.toggle("on", x === b));
-      draw();
-    }));
-    document.getElementById("cb-more").addEventListener("click", () => { showAll = true; draw(); });
-
-    fetch(`${RIOT}/combos`).then(r => r.json()).then(d => {
-      if (!d.members || d.members.length < 2) return;
-      data = d;
-      draw();
-      document.getElementById("combos").hidden = false;
-      document.getElementById("nav-combos").hidden = false;
-    }).catch(() => {});
-  })();
 </script>
 
 <section id="contact">

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACE Duos &amp; Squads</title>
+<meta name="description" content="ACE Clan's League of Legends win rate for every pair and lineup of members who queue together.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: radial-gradient(ellipse at 50% -20%, rgba(124, 58, 237, 0.22), transparent 60%), #0d0f14;
+    background-attachment: fixed; color: #e8e8e8; font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6;
+    min-height: 100vh; overflow-x: hidden;
+  }
+  h1, h2, h3 { font-family: 'Rajdhani', 'Segoe UI', Arial, sans-serif; }
+  .nav { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; max-width: 1000px; margin: 0 auto; }
+  .nav .logo { font-family: 'Rajdhani', 'Segoe UI', Arial, sans-serif; font-weight: 700; font-size: 1.4rem; letter-spacing: 3px;
+    color: #e8e8e8; text-decoration: none; }
+  .nav .logo span { color: #a78bfa; }
+  .nav a.back { color: #9ca3af; text-decoration: none; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; font-size: 0.9rem; }
+  .nav a.back:hover { color: #e8e8e8; }
+  .section-title { display: flex; align-items: center; justify-content: center; gap: 16px; }
+  .section-title::before, .section-title::after { content: ""; height: 2px; width: min(80px, 15vw);
+    background: linear-gradient(90deg, transparent, #7c3aed); }
+  .section-title::after { transform: scaleX(-1); }
+  .filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 25px; }
+  .filters button { background: #1a1d29; color: #9ca3af; border: 1px solid #2e2f3e; padding: 8px 20px; border-radius: 6px;
+    font: inherit; font-weight: 600; cursor: pointer; transition: background 0.2s, color 0.2s; }
+  .filters button:hover { color: #e8e8e8; }
+  .filters button.active { background: #7c3aed; border-color: #7c3aed; color: #e8e8e8; }
+  .cb-empty { color: #6b7280; text-align: center; padding: 14px; }
+  section#combos { max-width: 1000px; margin: 0 auto 80px; padding: 10px 16px 0; text-align: center; scroll-margin-top: 10px; }
+  section#combos h1 { color: #e8e8e8; margin-bottom: 10px; font-size: 2.6rem; letter-spacing: 6px; }
+  .cb-sub { color: #9ca3af; margin-bottom: 18px; }
+  .cb-wrap { overflow-x: auto; margin: 0 auto 34px; max-width: 100%; }
+  .cb-grid { border-collapse: separate; border-spacing: 4px; margin: 0 auto; }
+  .cb-grid th { color: #c4b5fd; font-weight: 600; font-size: 0.85rem; padding: 4px 6px; white-space: nowrap; }
+  .cb-grid thead th { vertical-align: bottom; }
+  .cb-grid tbody th { text-align: right; }
+  .cb-grid td { width: 74px; min-width: 64px; height: 54px; border-radius: 8px; background: #151823; border: 1px solid #2e2f3e;
+    color: #e8e8e8; font-size: 1.05rem; font-weight: 700; line-height: 1.1; }
+  .cb-grid td small { display: block; color: #cbd5e1; font-size: 0.7rem; font-weight: 400; margin-top: 2px; }
+  .cb-grid td.self { background: transparent; border-color: transparent; }
+  .cb-grid td.none { color: #4b5563; font-weight: 400; }
+  .cb-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; max-width: 760px; margin: 0 auto 10px; }
+  .cb-head h3 { color: #e8e8e8; font-size: 1.1rem; letter-spacing: 2px; }
+  .cb-sort button { background: #151823; border: 1px solid #2e2f3e; border-radius: 6px; color: #9ca3af; font: inherit;
+    font-size: 0.8rem; padding: 3px 10px; cursor: pointer; }
+  .cb-sort button.on { border-color: #7c3aed; color: #e8e8e8; }
+  .cb-lineups { display: flex; flex-direction: column; gap: 6px; max-width: 760px; margin: 0 auto; text-align: left; }
+  .cb-line { display: grid; grid-template-columns: 1fr auto 110px; align-items: center; gap: 4px 14px; background: #151823;
+    border: 1px solid #2e2f3e; border-radius: 8px; padding: 8px 12px; }
+  .cb-line .who { font-weight: 600; color: #e8e8e8; }
+  .cb-line .who span { display: inline-block; margin-left: 6px; color: #9ca3af; font-size: 0.75rem; font-weight: 400; }
+  .cb-line .cb-rec { color: #9ca3af; font-size: 0.85rem; white-space: nowrap; }
+  .cb-line .bar { position: relative; height: 22px; border-radius: 5px; background: #3b1720; overflow: hidden; }
+  .cb-line .bar i { position: absolute; inset: 0 auto 0 0; background: #166534; }
+  .cb-line .bar b { position: relative; display: block; text-align: center; font-size: 0.85rem; line-height: 22px; color: #fff; }
+  @media (max-width: 560px) { .cb-line { grid-template-columns: 1fr 90px; } .cb-line .cb-rec { grid-row: 2; } }
+  .cb-split { color: #6b7280; font-size: 0.85rem; text-align: center; margin: 14px 0 4px; }
+  .cb-line.few { opacity: 0.7; }
+  @media (max-width: 520px) { section#combos h1 { font-size: 1.7rem; letter-spacing: 3px; gap: 10px; } .filters button { padding: 6px 14px; } }
+</style>
+</head>
+<body>
+<div class="nav"><a class="logo" href="../">ACE<span>.</span></a><a class="back" href="../">← Back to the site</a></div>
+
+<section id="combos">
+  <h1 class="section-title">DUOS &amp; SQUADS</h1>
+  <p class="cb-sub">How often each group of us wins when we queue together, from every League game Riot still has.</p>
+  <div class="filters" id="cb-kinds">
+    <button data-kind="all" class="active">All games</button>
+    <button data-kind="ranked">Ranked</button>
+    <button data-kind="normal">Normal Draft</button>
+    <button data-kind="aram">ARAM</button>
+  </div>
+  <p class="cb-empty" id="cb-offline" hidden>Live stats are offline right now. Try again later.</p>
+  <div class="cb-wrap"><table class="cb-grid" id="cb-grid" aria-label="Win rate for each pair of players"></table></div>
+  <div class="cb-head"><h3>EVERY LINEUP</h3>
+    <div class="cb-sort" id="cb-sort"><button type="button" data-sort="win" class="on">Best to worst</button> <button type="button" data-sort="games">Most played</button></div>
+  </div>
+  <div class="cb-lineups" id="cb-lineups"></div>
+</section>
+
+<script>
+  // Duos & squads: win rate for every pair of clan members (the grid) and every exact lineup that queued
+  // together (the list), from RIOT API's saved games. If RIOT API is offline, it says so.
+  (() => {
+    const LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    const RIOT = LOCAL ? "http://localhost:5080" : "https://riot.aceclan.lol";
+    const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+    const nick = rid => rid.split("#")[0].replace(/^ACE /, "");
+    const SIZE = { 2: "duo", 3: "trio", 4: "4-stack", 5: "5-stack" };
+    const MIN_GAMES = 10;                   // lineups with fewer games go at the bottom, after the rest
+    let data = null, kind = "all", sort = "win";
+
+    // Green above 50%, red below: stronger the further from 50%, and the more games it's from.
+    function shade(g, w) {
+      const r = w / g, sure = Math.min(1, g / 30), a = Math.min(0.85, Math.abs(r - 0.5) * 3.2 * sure + 0.08);
+      return r >= 0.5 ? `rgba(22, 163, 74, ${a})` : `rgba(220, 38, 38, ${a})`;
+    }
+
+    function draw() {
+      const k = data.kinds[kind], members = data.members, rec = {};
+      for (const [a, b, g, w] of k.pairs) rec[a + "|" + b] = rec[b + "|" + a] = [g, w];
+      document.getElementById("cb-grid").innerHTML =
+        `<thead><tr><th></th>${members.map(m => `<th scope="col">${esc(nick(m))}</th>`).join("")}</tr></thead><tbody>` +
+        members.map(a => `<tr><th scope="row">${esc(nick(a))}</th>${members.map(b => {
+          if (a === b) return `<td class="self"></td>`;
+          const r = rec[a + "|" + b];
+          if (!r) return `<td class="none" title="${esc(nick(a))} and ${esc(nick(b))} haven't played together">–</td>`;
+          const [g, w] = r;
+          return `<td style="background:${shade(g, w)}" title="${esc(nick(a))} + ${esc(nick(b))}: ${w} wins, ${g - w} losses">${Math.round(100 * w / g)}%<small>${g} game${g === 1 ? "" : "s"}</small></td>`;
+        }).join("")}</tr>`).join("") + `</tbody>`;
+
+      // Best to worst: lineups with enough games first, then the ones with too few to say much, also best to worst.
+      const row = ([who, g, w], few) => {
+        const pct = Math.round(100 * w / g);
+        return `<div class="cb-line${few ? " few" : ""}"><div class="who">${who.map(m => esc(nick(m))).join(" + ")}<span>${SIZE[who.length] || who.length + " players"}</span></div>
+          <div class="cb-rec">${w}W ${g - w}L</div><div class="bar" title="${pct}% wins in ${g} games"><i style="width:${pct}%"></i><b>${pct}%</b></div></div>`;
+      };
+      const list = document.getElementById("cb-lineups"), lines = k.lineups.slice();
+      if (!lines.length) { list.innerHTML = `<p class="cb-empty">No games together of this kind yet.</p>`; return; }
+      if (sort === "games") { list.innerHTML = lines.map(l => row(l)).join(""); return; }
+      const best = (x, y) => y[2] / y[1] - x[2] / x[1] || y[1] - x[1];
+      const enough = lines.filter(l => l[1] >= MIN_GAMES).sort(best), few = lines.filter(l => l[1] < MIN_GAMES).sort(best);
+      list.innerHTML = enough.map(l => row(l)).join("") +
+        (few.length ? `<p class="cb-split">Fewer than ${MIN_GAMES} games together</p>` + few.map(l => row(l, true)).join("") : "");
+    }
+
+    document.querySelectorAll("#cb-kinds button").forEach(b => b.addEventListener("click", () => {
+      kind = b.dataset.kind;
+      document.querySelectorAll("#cb-kinds button").forEach(x => x.classList.toggle("active", x === b));
+      draw();
+    }));
+    document.querySelectorAll("#cb-sort button").forEach(b => b.addEventListener("click", () => {
+      sort = b.dataset.sort;
+      document.querySelectorAll("#cb-sort button").forEach(x => x.classList.toggle("on", x === b));
+      draw();
+    }));
+
+    const offline = () => { document.getElementById("cb-offline").hidden = false; };
+    fetch(`${RIOT}/combos`).then(r => r.json()).then(d => {
+      if (!d.members || d.members.length < 2) return offline();
+      data = d;
+      draw();
+    }).catch(offline);
+  })();
+</script>
+
+</body>
+</html>
