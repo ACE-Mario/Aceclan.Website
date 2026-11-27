@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">   <!-- unlisted: only for people given the link -->
 <title>ACE Downloads</title>
-<meta name="description" content="Programs from ACE Clan: ACE Overlay, a League of Legends scoreboard with player profiles and builds.">
+<meta name="description" content="Programs from ACE Clan: ACE Overlay, a League of Legends scoreboard with player profiles and builds, and ACE Remote for your phone.">
 <link rel="icon" href="ace.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,7 +40,7 @@
   .get { display: inline-flex; align-items: center; gap: 10px; background: #7c3aed; color: #fff; text-decoration: none; font-weight: 700;
     letter-spacing: 1px; padding: 12px 22px; border-radius: 10px; margin: 6px 0 14px; }
   .get:hover { background: #8b5cf6; }
-  .get small { font-weight: 400; opacity: 0.8; letter-spacing: 0; }
+  .get small { font-weight: 400; opacity: 0.8; letter-spacing: 0; white-space: nowrap; }
   .note { background: #151823; border: 1px solid #2e2f3e; border-radius: 10px; padding: 12px 14px; font-size: 0.9rem; color: #9ca3af; }
   .note b { color: #e8e8e8; }
   code { background: #1d2030; border: 1px solid #2e2f3e; border-radius: 5px; padding: 0 6px; font-size: 0.85em; }
@@ -79,6 +79,8 @@
           who it's strong or weak against, for each role and ARAM. Build stats come from op.gg (Emerald and above).</li>
         <li>Not in a game? Open it to see which clan members are playing right now, and click <b>Watch</b> to follow
           their game: champions, and the full scoreboard if one of them runs ACE Overlay too.</li>
+        <li><b>Phone remote</b>: control League from your phone (queue, accept, champ select, runes, skins, auto-ban,
+          auto-pick, every queue). Open <b>Phone remote</b> from the tray menu to pair, or use the ACE Remote window on the PC.</li>
         <li>Starts with Windows and sits in your tray (turn that off from the tray menu).</li>
         <li>It keeps itself up to date: when there's a new version, an <b>Update</b> button appears.</li>
       </ul>
@@ -87,6 +89,21 @@
         publisher. Click <b>More info</b> then <b>Run anyway</b>. Nothing to install: it runs straight away.</div>
       <div class="note">Set League to <b>Borderless</b> or <b>Windowed</b> (Settings → Video → Window Mode), or the overlay
         can't show on top. It only reads the game's own live data, the same way Riot allows other companion apps to.</div>
+    </div>
+  </article>
+
+  <article class="app">
+    <img src="ace.png" alt="ACE Remote icon">
+    <div>
+      <h2>ACE Remote (Android)</h2>
+      <div class="meta" id="remote-meta">Version 1.0.0 · Android · needs ACE Overlay on your PC</div>
+      <p>Control League on your PC from your phone: queue, accept with your phone locked, champ select, runes, skins,
+        auto-ban and auto-pick. Needs ACE Overlay running on the PC and the phone on the same Wi-Fi.</p>
+      <a class="get" id="remote-get" href="ACE-Remote.apk" download>⬇ Download ACE Remote <small>93 KB</small></a>
+      <div class="note"><b>To pair</b>, open <b>Phone remote</b> from the ACE tray menu on your PC and scan the QR code
+        in the app. Android may ask you to allow installing apps from your browser.</div>
+      <div class="note"><b>iPhone:</b> open Phone remote from the ACE tray menu and scan the QR code with the camera,
+        then Add to Home Screen.</div>
     </div>
   </article>
 
@@ -117,6 +134,11 @@
     document.getElementById("overlay-meta").textContent =
       `Version ${d.version} · ${new Date(d.date + "T00:00").toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })} · Windows 10 or 11`;
     document.getElementById("overlay-size").textContent = `${(d.size / 1e6).toFixed(0)} MB`;
+  }).catch(() => {});
+
+  // ACE Remote's version from remote-app.json (copied here with each APK build).
+  fetch("remote-app.json", { cache: "no-store" }).then(r => r.json()).then(d => {
+    document.getElementById("remote-meta").textContent = `Version ${d.versionName} · Android · needs ACE Overlay on your PC`;
   }).catch(() => {});
 
   // The mod lives on hypixel.aceclan.lol, where its own update check reads latest.json: use the same file,
